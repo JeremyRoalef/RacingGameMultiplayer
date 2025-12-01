@@ -24,12 +24,12 @@ public class CreateTrack : MonoBehaviour
 
     public void OnInteract()
     {
-        int randInt = Random.Range(0, middlePieces.Length);
-        SpawnPiece(randInt);
+        SpawnPiece();
     }
 
-    private void SpawnPiece(int randInt)
+    private void SpawnPiece()
     {
+        int randInt = Random.Range(0, middlePieces.Length);
         // GameObject lastPiece = CreatedPieces.Last();
         // TrackPiece lastTrack = lastPiece.GetComponent<TrackPiece>();
 
