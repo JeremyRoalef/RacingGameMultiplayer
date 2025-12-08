@@ -5,7 +5,6 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
-    [Header("Panels")]
     [SerializeField] private GameObject mainMenuContainer;
     [SerializeField] private GameObject failContainer;
     [SerializeField] private GameObject winContainer;
@@ -13,8 +12,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI totalTimeText;
     [SerializeField] private TextMeshProUGUI lastCheckPointTimeText;
 
-    [Header("Win Panel")]
     [SerializeField] private TextMeshProUGUI winTimeText;
+
+    private const int EASY = 1;
+    private const int MED = 2;
+    private const int HARD = 3;
 
     void Awake()
     {
@@ -33,30 +35,31 @@ public class UIManager : MonoBehaviour
         ShowMainMenu();
     }
 
-    #region Main Menu
+    // Methods for main menu buttons
     public void OnClickEasy()
     {
-        StartGame(1);
+        StartGame(EASY);
     }
 
     public void OnClickMedium()
     {
-        StartGame(2);
+        StartGame(MED);
     }
 
     public void OnClickHard()
     {
-        StartGame(3);
+        StartGame(HARD);
     }
 
     public void OnClickQuit()
     {
-        Application.Quit();
+        Application.Quit(); // Closes the application
         #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
+        UnityEditor.EditorApplication.isPlaying = false; // Stops the unity editor
         #endif
     }
 
+    // Start a game with the set difficulty
     private void StartGame(int difficulty)
     {
         Debug.Log("Starting Game with difficulty " + difficulty);
@@ -71,32 +74,30 @@ public class UIManager : MonoBehaviour
         RaceManager.Instance.StartRace();
         timerContainer.SetActive(true);
     }
-    #endregion
 
-    #region Fail Panel
+    // Fail Overlay
     public void ShowFail()
     {
         timerContainer.SetActive(false);
         failContainer.SetActive(true);
     }
 
-    public void OnRetryFromFail()
+    public void OnRetryFromFail() // Retry button
     {
         failContainer.SetActive(false);
         RaceManager.Instance.ResetRaceAndStart();
         timerContainer.SetActive(true);
     }
 
-    public void OnMainMenuFromFail()
+    public void OnMainMenuFromFail() // Main Menu button
     {
         failContainer.SetActive(false);
         ShowMainMenu();
         CreateTrack.Instance.ClearTrack();
         RaceManager.Instance.ResetRaceStateOnly();
     }
-    #endregion
 
-    #region Win Panel
+    // Race win overlay
     public void ShowWin(float finalTime)
     {
         timerContainer.SetActive(false);
@@ -104,36 +105,42 @@ public class UIManager : MonoBehaviour
         winContainer.SetActive(true);
     }
 
-    public void OnRetryFromWin()
+    public void OnRetryFromWin() // retry button
     {
         winContainer.SetActive(false);
         RaceManager.Instance.ResetRaceAndStart();
         timerContainer.SetActive(true);
     }
 
-    public void OnMainMenuFromWin()
+    public void OnMainMenuFromWin() // main menu button
     {
         winContainer.SetActive(false);
         ShowMainMenu();
         CreateTrack.Instance.ClearTrack();
         RaceManager.Instance.ResetRaceStateOnly();
     }
-    #endregion
-    
+
+    // When returning to the main menu
     private void ShowMainMenu()
     {
+        // Clear the track
         CreateTrack.Instance.ClearTrack();
+
+        // Reset active overlays
         mainMenuContainer.SetActive(true);
         failContainer.SetActive(false);
         winContainer.SetActive(false);
         timerContainer.SetActive(false);
     }
+
+    // Update live in-game timers
     public void UpdateTimers(float totalTime, float lastCheckpointTime)
     {
         totalTimeText.text = $"Total Time: {FormatTime(totalTime)}";
         lastCheckPointTimeText.text = $"Last Checkpoint Time: {FormatTime(lastCheckpointTime)}";
     }
 
+    // Format raw unity time to readable time. 
     private string FormatTime(float time)
     {
         int minutes = (int)time / 60;

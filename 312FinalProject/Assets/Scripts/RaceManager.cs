@@ -33,6 +33,7 @@ public class RaceManager : MonoBehaviour
 
     void Update()
     {
+        // Update timers for checkpoints and UI purposes only if the race has started.
         if (raceStarted)
         {
             UpdateTime();
@@ -40,14 +41,16 @@ public class RaceManager : MonoBehaviour
         }
     }
 
-    #region Checkpoints
+    // Logic for when we trigger checkpoints; called by the checkpoint class
     public void CheckpointReached(int checkpointIndex)
     {
+        // Ignore if the race hasn't started yet and we didn't start it, or if the race is finished
         if ((!raceStarted && checkpointIndex != 0) || raceFinished) return;
 
         // Always apply checkpoint logic
         UpdateCheckpoint(checkpointIndex);
 
+        // For medium and hard difficulties, will track timers every 10 track pieces. 
         if (checkpointIndex % 10 == 0 && checkpointIndex > 1)
         {
             lastCheckpointTime = totalTime;  // still store it
@@ -55,26 +58,7 @@ public class RaceManager : MonoBehaviour
         }
     }
 
-    private void UpdateCheckpoint(int checkpointIndex)
-    {
-        if (checkpointIndex == checkpoints.Count - 1)
-        {
-            EndRace();
-            UIManager.Instance.ShowWin(totalTime);
-            return;
-        }
-
-        if (checkpointIndex == 0 && !raceStarted)
-        {
-            StartRace(); // Only auto-start for first checkpoint if race not started
-        }
-
-        timeSinceLastCheckpoint = 0;
-        lastCheckpointIndex = checkpointIndex;
-    }
-    #endregion
-
-    #region Race Control
+    // Start Race method
     public void StartRace()
     {
         raceStarted = true;
@@ -83,12 +67,7 @@ public class RaceManager : MonoBehaviour
         playerMovement.StartPlayer();
     }
 
-    private void EndRace()
-    {
-        raceStarted = false;
-        raceFinished = true;
-    }
-
+    // Reset only the race state; for when you fail or win and are in a menu
     public void ResetRaceStateOnly()
     {
         raceStarted = false;
@@ -106,26 +85,56 @@ public class RaceManager : MonoBehaviour
         playerMovement.StopPlayer();
     }
 
+    // Reset and restart the race; for when you hit retry on the win or lose menu
     public void ResetRaceAndStart()
     {
         ResetRaceStateOnly();
         StartRace();
     }
-    #endregion
 
-    #region Timing
+    // Update the currently passed checkpoint. 
+    private void UpdateCheckpoint(int checkpointIndex)
+    {
+        // If we passed the last checkpoint,
+        if (checkpointIndex == checkpoints.Count - 1)
+        {
+            EndRace();
+            UIManager.Instance.ShowWin(totalTime);
+            return;
+        }
+
+        if (checkpointIndex == 0 && !raceStarted)
+        {
+            StartRace(); // Only auto-start for first checkpoint if race not started
+        }
+
+        timeSinceLastCheckpoint = 0; // Reset time since last checkpoint
+        lastCheckpointIndex = checkpointIndex; // Set index of the most recently passed checkpoint to
+                                               // the one we just passed
+    }
+
+    private void EndRace()
+    {
+        raceStarted = false;
+        raceFinished = true;
+    }
+
+    // Upddate total race timers
     private void UpdateTime()
     {
+        // Always increment total time and time since last checkpoint
         totalTime += Time.deltaTime;
+        timeSinceLastCheckpoint += Time.deltaTime;
 
+        // increment time since grounded only while not grounded
         if (!playerMovement.isGrounded)
             timeSinceGrounded += Time.deltaTime;
         else
             timeSinceGrounded = 0f;
 
-        timeSinceLastCheckpoint += Time.deltaTime;
 
-        // Fail condition
+        // Fail condition: if fail hasn't already triggered or you've spent too long mid-air or not 
+        // progressing to the next checkpoint, begin fail sequence. 
         if (!failTriggered && (timeSinceGrounded > 5f || timeSinceLastCheckpoint > 10f))
         {
             failTriggered = true;
@@ -134,5 +143,4 @@ public class RaceManager : MonoBehaviour
             UIManager.Instance.ShowFail(); // show fail overlay
         }
     }
-    #endregion
 }
