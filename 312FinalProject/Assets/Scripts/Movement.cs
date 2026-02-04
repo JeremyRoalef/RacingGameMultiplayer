@@ -1,24 +1,32 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Movement : MonoBehaviour
 {
+    [Header("Movement Input")]
+    [SerializeField] VehicleInput vehicleInput;
+
+    [Header("General References")]
     [SerializeField] private Rigidbody carRB;
-    [SerializeField] private Transform[] rayPoints;
-    [SerializeField] private Transform accelerationPoint;
-    [SerializeField] private LayerMask driveable;
-    [SerializeField] private GameObject[] tires = new GameObject[4];
-    [SerializeField] private GameObject[] frontTireParents = new GameObject[2];
+    [SerializeField] private Transform[] tireSuspensionRayPoints;
     [SerializeField] private TrailRenderer[] skidMarks = new TrailRenderer[2];
     [SerializeField] private ParticleSystem[] skidSmokes = new ParticleSystem[2];
-    [SerializeField] private AudioSource engineSound, skidSound;
+    [SerializeField] private GameObject[] tires = new GameObject[4];
+    [SerializeField] private GameObject[] frontTireParents = new GameObject[2];
+    [SerializeField] private Transform accelerationPoint;
+    [SerializeField] private LayerMask driveableLayerMask;
 
+
+    [Header("Wheel Settings")]
     [SerializeField] private float springStiffness;
     [SerializeField] private float damperStiffness;
     [SerializeField] private float restLength;
     [SerializeField] private float springTravel;
     [SerializeField] private float wheelRadius;
 
+
+    [Header("Control Settings")]
     [SerializeField] private float acceleration = 25f;
     [SerializeField] private float maxSpeed = 100f;
     [SerializeField] private float deceleration = 10f;
@@ -29,27 +37,28 @@ public class Movement : MonoBehaviour
     [SerializeField] private float maxSteeringAngle = 30f;
     [SerializeField] private float minSideSkidVelocity = 10f;
 
-    private int[] wheelsIsGrounded = new int[4];
-    [HideInInspector] public bool isGrounded = false;
-    private Vector2 movement;
+
+    [Header("Audio Settings")]
+    [SerializeField] private AudioSource engineSound;
+    [SerializeField] private AudioSource skidSound;
+    [SerializeField, Range(0,1)] private float minPitch = 1f;
+    [SerializeField, Range(0,5)] private float maxpitch = 5f;
+
+
     private Vector3 currentCarLocalVelocity = Vector3.zero;
-    private float carVelocityRatio;
     private Vector3 startPos;
     private Quaternion startRotation;
-    [SerializeField]
-    [Range(0,1)] private float minPitch = 1f;
-    [SerializeField]
-    [Range(0,5)] private float maxpitch = 5f;
+
+    [HideInInspector] public bool isGrounded = false;
+    private int[] wheelsIsGrounded = new int[4];
+    private float carVelocityRatio;
 
     void Awake()
     {
         // Initialize start position
         startPos = transform.position;
         startRotation = transform.rotation;
-    }
 
-    void Start()
-    { 
         // Initialize RB
         carRB = GetComponent<Rigidbody>();
         carRB.isKinematic = true;
@@ -57,8 +66,8 @@ public class Movement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!RaceManager.Instance.raceStarted)
-        return; // If the race isn't started, ignore all physics method calls
+        //if (!RaceManager.Instance.raceStarted)
+        //return; // If the race isn't started, ignore all physics method calls
 
         Suspension();
         GroundCheck();
@@ -71,14 +80,16 @@ public class Movement : MonoBehaviour
     // Get input using new Unity input actions
     public void OnMove(InputValue value)
     {
-        if (RaceManager.Instance.raceStarted)
-        {
-            movement = value.Get<Vector2>();    
-        }
-        else
-        {
-            movement = Vector2.zero;
-        }
+        //movement = value.Get<Vector2>();
+
+        //if (RaceManager.Instance.raceStarted)
+        //{
+
+        //}
+        //else
+        //{
+        //    movement = Vector2.zero;
+        //}
     }
 
     // Reset player to start position and remove all RB velocity. 
@@ -121,22 +132,21 @@ public class Movement : MonoBehaviour
             Turn();
             SidewaysDrag();
         }
+        else
+        {
+            Debug.Log("car not grounded");
+        }
     }
 
     private void Acceleration()
     {
-        carRB.AddForceAtPosition(acceleration * movement.y * transform.forward, accelerationPoint.position, ForceMode.Acceleration);
+        carRB.AddForceAtPosition(acceleration * vehicleInput.Movement.y * transform.forward, accelerationPoint.position, ForceMode.Acceleration);
     }
-
-    // private void Deceleration()
-    // {
-    //     carRB.AddForceAtPosition(deceleration * movement.y * -transform.forward, accelerationPoint.position, ForceMode.Acceleration);
-    // }
 
     // Evaluate turning power based on a steering curve (found in the editor)
     private void Turn()
     {
-        carRB.AddTorque(steerStrength * movement.x * turningCurve.Evaluate(carVelocityRatio) * Mathf.Sign(carVelocityRatio) * transform.up, ForceMode.Acceleration);
+        carRB.AddTorque(steerStrength * vehicleInput.Movement.x * turningCurve.Evaluate(carVelocityRatio) * Mathf.Sign(carVelocityRatio) * transform.up, ForceMode.Acceleration);
     }
 
     // Add sideways drag to determine how "slippy" the tires are. 
@@ -155,28 +165,28 @@ public class Movement : MonoBehaviour
     private void Suspension()
     {
         // For each raypoint that represents a tire suspension spring
-        for (int i = 0; i < rayPoints.Length; i++)
+        for (int i = 0; i < tireSuspensionRayPoints.Length; i++)
         {
             RaycastHit hit;
             float maxLength = restLength + springTravel;
 
             // Calculate ray hit
-            bool rayDidHit = Physics.Raycast(rayPoints[i].position, -rayPoints[i].up, out hit, maxLength + wheelRadius, driveable);
+            bool rayDidHit = Physics.Raycast(tireSuspensionRayPoints[i].position, -tireSuspensionRayPoints[i].up, out hit, maxLength + wheelRadius, driveableLayerMask);
 
             // If the ray didn't hit
             if (!rayDidHit)
             {   
                 // Set that wheel to be ungrounded
                 wheelsIsGrounded[i] = 0;
-                SetTirePosition(tires[i], rayPoints[i].position - rayPoints[i].up * maxLength);
-                Debug.DrawLine(rayPoints[i].position, rayPoints[i].position + (wheelRadius + maxLength) * -rayPoints[i].up, Color.green);
+                SetTirePosition(tires[i], tireSuspensionRayPoints[i].position - tireSuspensionRayPoints[i].up * maxLength);
+                Debug.DrawLine(tireSuspensionRayPoints[i].position, tireSuspensionRayPoints[i].position + (wheelRadius + maxLength) * -tireSuspensionRayPoints[i].up, Color.green);
                 continue;
             }
 
             // Otherwise, set that wheel to grounded
             wheelsIsGrounded[i] = 1;
 
-            Vector3 springDir = rayPoints[i].up;   // direction of the spring
+            Vector3 springDir = tireSuspensionRayPoints[i].up;   // direction of the spring
 
             // Effective suspension length (pivot to wheel contact)
             float currentLength = hit.distance - wheelRadius;
@@ -185,7 +195,7 @@ public class Movement : MonoBehaviour
             float displacement = restLength - currentLength;
 
             // Velocity along the spring direction
-            float vel = Vector3.Dot(carRB.GetPointVelocity(rayPoints[i].position), springDir);
+            float vel = Vector3.Dot(carRB.GetPointVelocity(tireSuspensionRayPoints[i].position), springDir);
 
             // Hooke’s law + damping
             float force = (springStiffness * displacement) - (damperStiffness * vel);
@@ -194,12 +204,12 @@ public class Movement : MonoBehaviour
             if (force < 0) force = 0;
 
             // Add the calculated spring force
-            carRB.AddForceAtPosition(springDir * force, rayPoints[i].position);
+            carRB.AddForceAtPosition(springDir * force, tireSuspensionRayPoints[i].position);
 
             // Adjust the visual tire position
-            SetTirePosition(tires[i], hit.point + rayPoints[i].up * wheelRadius);
+            SetTirePosition(tires[i], hit.point + tireSuspensionRayPoints[i].up * wheelRadius);
 
-            Debug.DrawLine(rayPoints[i].position, hit.point, Color.red);
+            Debug.DrawLine(tireSuspensionRayPoints[i].position, hit.point, Color.red);
         }
     }
 
@@ -280,7 +290,7 @@ public class Movement : MonoBehaviour
     // Tire rotation effects
     private void TireVisuals()
     {
-        float steeringAngle = maxSteeringAngle * movement.x;
+        float steeringAngle = maxSteeringAngle * vehicleInput.Movement.x;
 
         for (int i = 0; i < tires.Length; i++)
         {
@@ -294,7 +304,7 @@ public class Movement : MonoBehaviour
             }
             else // rear tires just rotate forward and backwards.
             {
-                tires[i].transform.Rotate(Vector3.right, tireRotationSpeed * movement.y * Time.deltaTime, Space.Self);
+                tires[i].transform.Rotate(Vector3.right, tireRotationSpeed * vehicleInput.Movement.y * Time.deltaTime, Space.Self);
             }
         }
     }
