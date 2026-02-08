@@ -10964,10 +10964,15 @@ GameObject:
   - component: {fileID: 2097931418064837785}
   - component: {fileID: 5959945472867875677}
   - component: {fileID: 7051002356735029247}
-  - component: {fileID: 7114585172613885148}
-  - component: {fileID: 2380512843966077400}
   - component: {fileID: 5835147444059361649}
   - component: {fileID: 5379721854226013688}
+  - component: {fileID: 2380512843966077400}
+  - component: {fileID: 4476085922497140536}
+  - component: {fileID: -2937387871623322033}
+  - component: {fileID: -7234164287641193562}
+  - component: {fileID: 7114585172613885148}
+  - component: {fileID: -8436448356685904634}
+  - component: {fileID: -3318226183801391361}
   m_Layer: 3
   m_Name: Car
   m_TagString: Player
@@ -11041,132 +11046,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.806107, y: 1.6690011, z: 6.7167573}
   m_Center: {x: -0, y: 1.1579859, z: 0}
---- !u!114 &7114585172613885148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8149684190073921161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb6e1778ee1100949bc544b862e844d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Movement
-  carRB: {fileID: 5959945472867875677}
-  rayPoints:
-  - {fileID: 1169691250790351269}
-  - {fileID: 7995784981670819969}
-  - {fileID: 7261297230945583925}
-  - {fileID: 1963844576360288714}
-  accelerationPoint: {fileID: 2540596237020074354}
-  driveable:
-    serializedVersion: 2
-    m_Bits: 64
-  tires:
-  - {fileID: 7365973461468342187}
-  - {fileID: 3512913424776247916}
-  - {fileID: 5198683060732712892}
-  - {fileID: 210094570282665149}
-  frontTireParents:
-  - {fileID: 5205186426915717102}
-  - {fileID: 5412997186890712914}
-  skidMarks:
-  - {fileID: 8401361612225478142}
-  - {fileID: 1343419343529041041}
-  skidSmokes:
-  - {fileID: 7845968176177401945}
-  - {fileID: 2959744883177925929}
-  engineSound: {fileID: 5835147444059361649}
-  skidSound: {fileID: 5379721854226013688}
-  springStiffness: 30000
-  damperStiffness: 2000
-  restLength: 0.45
-  springTravel: 0.25
-  wheelRadius: 0.5
-  acceleration: 30
-  maxSpeed: 140
-  deceleration: 10
-  steerStrength: 30
-  turningCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.13235188
-      value: 0.9229218
-      inSlope: 0.7878375
-      outSlope: 0.7878375
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.24954847
-    - serializedVersion: 3
-      time: 0.65561396
-      value: 0.9970839
-      inSlope: -0.114011355
-      outSlope: -0.114011355
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.9860558
-      value: 0.826484
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 0
-    m_PostInfinity: 0
-    m_RotationOrder: 4
-  dragCoefficient: 1.2
-  tireRotationSpeed: 3400
-  maxSteeringAngle: 30
-  minSideSkidVelocity: 8
-  isGrounded: 0
-  minPitch: 0.258
-  maxpitch: 3.54
---- !u!114 &2380512843966077400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8149684190073921161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!82 &5835147444059361649
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11361,6 +11240,250 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2380512843966077400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8149684190073921161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
+  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: Keyboard&Mouse
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!114 &4476085922497140536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8149684190073921161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 1265534939
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &-2937387871623322033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8149684190073921161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 0
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
+--- !u!114 &-7234164287641193562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8149684190073921161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d56e8a28e1d684b42931db0b862c2e33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClientPlayerMove
+  ShowTopMostFoldoutHeaderGroup: 1
+  playerInput: {fileID: 2380512843966077400}
+  movement: {fileID: 7114585172613885148}
+  vehicleInput: {fileID: -8436448356685904634}
+--- !u!114 &7114585172613885148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8149684190073921161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6e1778ee1100949bc544b862e844d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Movement
+  vehicleInput: {fileID: -8436448356685904634}
+  carRB: {fileID: 5959945472867875677}
+  tireSuspensionRayPoints:
+  - {fileID: 1169691250790351269}
+  - {fileID: 7995784981670819969}
+  - {fileID: 7261297230945583925}
+  - {fileID: 1963844576360288714}
+  skidMarks:
+  - {fileID: 8401361612225478142}
+  - {fileID: 1343419343529041041}
+  skidSmokes:
+  - {fileID: 7845968176177401945}
+  - {fileID: 2959744883177925929}
+  tires:
+  - {fileID: 7365973461468342187}
+  - {fileID: 3512913424776247916}
+  - {fileID: 5198683060732712892}
+  - {fileID: 210094570282665149}
+  frontTireParents:
+  - {fileID: 5205186426915717102}
+  - {fileID: 5412997186890712914}
+  accelerationPoint: {fileID: 2540596237020074354}
+  driveableLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  springStiffness: 30000
+  damperStiffness: 2000
+  restLength: 0.45
+  springTravel: 0.25
+  wheelRadius: 0.5
+  acceleration: 30
+  maxSpeed: 140
+  deceleration: 10
+  steerStrength: 30
+  turningCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.13235188
+      value: 0.9229218
+      inSlope: 0.7878375
+      outSlope: 0.7878375
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.24954847
+    - serializedVersion: 3
+      time: 0.65561396
+      value: 0.9970839
+      inSlope: -0.114011355
+      outSlope: -0.114011355
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9860558
+      value: 0.826484
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 0
+    m_PostInfinity: 0
+    m_RotationOrder: 4
+  dragCoefficient: 1.2
+  tireRotationSpeed: 3400
+  maxSteeringAngle: 30
+  minSideSkidVelocity: 8
+  engineSound: {fileID: 5835147444059361649}
+  skidSound: {fileID: 5379721854226013688}
+  minPitch: 0.258
+  maxpitch: 3.54
+  isGrounded: 0
+--- !u!114 &-8436448356685904634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8149684190073921161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6428d9703f769034694a098c60b1aacd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehicleInput
+  moveInput: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!114 &-3318226183801391361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8149684190073921161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 0
+  AutoUpdateKinematicState: 1
+  AutoSetKinematicOnDespawn: 1
 --- !u!1 &9154602550100393949
 GameObject:
   m_ObjectHideFlags: 0
