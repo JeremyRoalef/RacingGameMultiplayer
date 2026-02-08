@@ -17,7 +17,7 @@ public class RaceManager : MonoBehaviour
     private bool raceFinished = false;
     private bool failTriggered = false;
 
-    private Movement playerMovement;
+    private Vehicle playerMovement;
     public List<Checkpoint> checkpoints;
 
     void Awake()
@@ -28,7 +28,7 @@ public class RaceManager : MonoBehaviour
 
     void Start()
     {
-        playerMovement = player.GetComponent<Movement>();
+        playerMovement = player.GetComponent<Vehicle>();
     }
 
     void Update()
@@ -64,7 +64,7 @@ public class RaceManager : MonoBehaviour
         raceStarted = true;
         raceFinished = false;
         failTriggered = false;
-        playerMovement.StartPlayer();
+        //playerMovement.StartPlayer();
     }
 
     // Reset only the race state; for when you fail or win and are in a menu
@@ -81,8 +81,8 @@ public class RaceManager : MonoBehaviour
 
         lastCheckpointIndex = -1;
 
-        playerMovement.ResetPlayer();
-        playerMovement.StopPlayer();
+        //playerMovement.ResetPlayer();
+        //playerMovement.StopPlayer();
     }
 
     // Reset and restart the race; for when you hit retry on the win or lose menu
@@ -127,7 +127,7 @@ public class RaceManager : MonoBehaviour
         timeSinceLastCheckpoint += Time.deltaTime;
 
         // increment time since grounded only while not grounded
-        if (!playerMovement.isGrounded)
+        if (!playerMovement.IsGrounded)
             timeSinceGrounded += Time.deltaTime;
         else
             timeSinceGrounded = 0f;
@@ -139,7 +139,7 @@ public class RaceManager : MonoBehaviour
         {
             failTriggered = true;
             raceStarted = false;           // pause race
-            playerMovement.StopPlayer();
+            //playerMovement.StopPlayer();
             UIManager.Instance.ShowFail(); // show fail overlay
         }
     }
