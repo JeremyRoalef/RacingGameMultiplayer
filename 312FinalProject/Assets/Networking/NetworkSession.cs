@@ -192,11 +192,21 @@ public class NetworkSession : MonoBehaviour
 
     private void HandleClientDisconnected(ulong clientID)
     {
+        if (clientID == 0)
+        {
+            //Host disconnected. end connection
+            NetworkManager.Singleton.Shutdown();
+            return;
+
+        }
+        if (NetworkManager.Singleton.LocalClientId != clientID) return;
         Debug.Log($"Client disconnected: {clientID}");
+        NetworkManager.Singleton.Shutdown();
     }
 
     private void HandleClientConnected(ulong clientID)
     {
+        if (NetworkManager.Singleton.LocalClientId != clientID) return;
         Debug.Log($"Client connected: {clientID}");
     }
 }

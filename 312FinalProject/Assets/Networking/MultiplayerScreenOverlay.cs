@@ -1,11 +1,16 @@
 using System;
 using System.Linq;
 using TMPro;
+using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MultiplayerScreenOverlay : MonoBehaviour
 {
+    [SerializeField]
+    Canvas canvas;
+
     [SerializeField]
     Button buttonStartHost;
 
@@ -37,6 +42,19 @@ public class MultiplayerScreenOverlay : MonoBehaviour
         buttonStartClient.onClick.AddListener(StartClientAsync);
         inputFieldJoinCode.onValueChanged.AddListener(HandleJoinCodeChanged);
         inputFieldJoinCode.onValidateInput += EnsureValidJoinCodeInput;
+    }
+
+    private void Start()
+    {
+        NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnects;
+    }
+
+    private void HandleClientDisconnects(ulong clientID)
+    {
+        if (NetworkManager.Singleton.LocalClientId != clientID) return;
+
+        canvas.enabled = true;
+        SetInteraction(true);
     }
 
     private async void StartClientAsync()
@@ -74,7 +92,7 @@ public class MultiplayerScreenOverlay : MonoBehaviour
     void HandleHostSessionSuccessful(string joinCode)
     {
         //Disable object; no longer needed
-        gameObject.SetActive(false);
+        canvas.enabled = false;
     }
     void HandleHostSessionFailed(string message)
     {
@@ -87,7 +105,7 @@ public class MultiplayerScreenOverlay : MonoBehaviour
     private void HandleClientJoinSession(string message)
     {
         //Disable object; no longer needed
-        gameObject.SetActive(false);
+        canvas.enabled = false;
     }
 
     private void HandleClientFailedToJoinSession(string message)
