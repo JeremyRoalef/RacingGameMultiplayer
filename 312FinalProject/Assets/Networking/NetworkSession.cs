@@ -69,21 +69,15 @@ public class NetworkSession : MonoBehaviour
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
 
-<<<<<<< Updated upstream
-        //Client connection/disconnection
-        NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
-=======
-        //Handle the client being disconnected from lobbies
+        //Client disconnection
         NetworkManager.Singleton.OnClientDisconnectCallback += HandlePlayerDisconnected;
->>>>>>> Stashed changes
     }
 
     /// <summary>
     /// Starts a host session for the player. On success, invokes the success method(s) and returns a join code. On fail,
     /// invokes the fail method(s) and returns the error message.
     /// </summary>
-    public static async Task StartHostAsync(int numOfClientsInSession, Action<string> OnHostSessionSuccessful, Action<string> OnHostSessionFailed)
+    public static async Task StartHostAsync(int numOfClientsInSession, Action<string> OnHostSessionFailed)
     {
         //Check if attmepting to start host before initialization
         if (initStatus != InitStatus.SignedIn)
@@ -116,7 +110,6 @@ public class NetworkSession : MonoBehaviour
             if (NetworkManager.Singleton.StartHost())
             {
                 //Session started successfully
-                OnHostSessionSuccessful?.Invoke(joinCode);
                 instance.JoinCode = joinCode;
                 await SceneManager.LoadSceneAsync(1);
                 instance.StartCoroutine(instance.SpawnLobbyManagerNextFrame());
@@ -144,7 +137,7 @@ public class NetworkSession : MonoBehaviour
         }
     }
 
-    public static async Task StartClientAsync(string joinCode, Action<string> OnSessionJoined, Action<string> OnSessionNotFound)
+    public static async Task StartClientAsync(string joinCode, Action<string> OnSessionNotFound)
     {
         //Check if attmepting to start client before initialization
         if (initStatus != InitStatus.SignedIn)
@@ -171,7 +164,6 @@ public class NetworkSession : MonoBehaviour
             if (NetworkManager.Singleton.StartClient())
             {
                 //Session joined successfully
-                OnSessionJoined?.Invoke(joinCode);
                 instance.JoinCode = joinCode;
             }
             else
@@ -212,26 +204,6 @@ public class NetworkSession : MonoBehaviour
         AuthenticationService.Instance.SignedIn -= HandleAuthServiceSignIn;
     }
 
-<<<<<<< Updated upstream
-    private void HandleClientDisconnected(ulong clientID)
-    {
-        if (clientID == 0)
-        {
-            //Host disconnected. end connection
-            NetworkManager.Singleton.Shutdown();
-            return;
-
-        }
-        if (NetworkManager.Singleton.LocalClientId != clientID) return;
-        Debug.Log($"Client disconnected: {clientID}");
-        NetworkManager.Singleton.Shutdown();
-    }
-
-    private void HandleClientConnected(ulong clientID)
-    {
-        if (NetworkManager.Singleton.LocalClientId != clientID) return;
-        Debug.Log($"Client connected: {clientID}");
-=======
     public static void QuitSession()
     {
         //End network session
@@ -248,6 +220,5 @@ public class NetworkSession : MonoBehaviour
         //Spawn the lobby manager
         LobbyManager newLobbyManager = Instantiate(instance.lobbyManager);
         newLobbyManager.GetComponent<NetworkObject>().Spawn();
->>>>>>> Stashed changes
     }
 }

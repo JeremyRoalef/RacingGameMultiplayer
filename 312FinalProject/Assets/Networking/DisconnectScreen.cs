@@ -21,6 +21,12 @@ public class DisconnectScreen : MonoBehaviour
         buttonQuit.onClick.AddListener(QuitSession);
     }
 
+    private void OnDisable()
+    {
+        NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnect;
+    }
+
     private void QuitSession()
     {
         NetworkManager.Singleton.Shutdown();
