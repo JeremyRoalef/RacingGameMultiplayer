@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -9,11 +10,15 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkSession : MonoBehaviour
 {
-    static NetworkSession networkSession;
-    string joinCode = string.Empty;
+    [SerializeField]
+    LobbyManager lobbyManager;
+
+    public static NetworkSession instance;
+    public string JoinCode { get; private set; }
 
     enum InitStatus
     {
@@ -28,9 +33,9 @@ public class NetworkSession : MonoBehaviour
     private void Awake()
     {
         //Singleton pattern
-        if (networkSession == null)
+        if (instance == null)
         {
-            networkSession = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
             initStatus = InitStatus.AwaitingSignIn;
         }
@@ -38,6 +43,8 @@ public class NetworkSession : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        JoinCode = string.Empty;
     }
 
     async void Start()
@@ -62,9 +69,14 @@ public class NetworkSession : MonoBehaviour
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
 
+<<<<<<< Updated upstream
         //Client connection/disconnection
         NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+=======
+        //Handle the client being disconnected from lobbies
+        NetworkManager.Singleton.OnClientDisconnectCallback += HandlePlayerDisconnected;
+>>>>>>> Stashed changes
     }
 
     /// <summary>
@@ -105,7 +117,9 @@ public class NetworkSession : MonoBehaviour
             {
                 //Session started successfully
                 OnHostSessionSuccessful?.Invoke(joinCode);
-                networkSession.joinCode = joinCode;
+                instance.JoinCode = joinCode;
+                await SceneManager.LoadSceneAsync(1);
+                instance.StartCoroutine(instance.SpawnLobbyManagerNextFrame());
             }
             else
             {
@@ -158,7 +172,7 @@ public class NetworkSession : MonoBehaviour
             {
                 //Session joined successfully
                 OnSessionJoined?.Invoke(joinCode);
-                networkSession.joinCode = joinCode;
+                instance.JoinCode = joinCode;
             }
             else
             {
@@ -183,6 +197,14 @@ public class NetworkSession : MonoBehaviour
         }
     }
 
+    private void HandlePlayerDisconnected(ulong obj)
+    {
+        if (NetworkManager.Singleton.LocalClientId == obj)
+        {
+            QuitSession();
+        }
+    }
+
     private void HandleAuthServiceSignIn()
     {
         Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
@@ -190,6 +212,7 @@ public class NetworkSession : MonoBehaviour
         AuthenticationService.Instance.SignedIn -= HandleAuthServiceSignIn;
     }
 
+<<<<<<< Updated upstream
     private void HandleClientDisconnected(ulong clientID)
     {
         if (clientID == 0)
@@ -208,5 +231,23 @@ public class NetworkSession : MonoBehaviour
     {
         if (NetworkManager.Singleton.LocalClientId != clientID) return;
         Debug.Log($"Client connected: {clientID}");
+=======
+    public static void QuitSession()
+    {
+        //End network session
+        NetworkManager.Singleton.Shutdown();
+
+        //Return to main menu
+        SceneManager.LoadScene(0);
+    }
+
+    IEnumerator SpawnLobbyManagerNextFrame()
+    {
+        yield return null;
+
+        //Spawn the lobby manager
+        LobbyManager newLobbyManager = Instantiate(instance.lobbyManager);
+        newLobbyManager.GetComponent<NetworkObject>().Spawn();
+>>>>>>> Stashed changes
     }
 }

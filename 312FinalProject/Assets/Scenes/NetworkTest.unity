@@ -1326,6 +1326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af37daf681fa6a145948c5fa344d1e62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkSession
+  lobbyManager: {fileID: 2566471564397210610, guid: eea2416cb720ce74891a6b0d95fedce7, type: 3}
 --- !u!4 &1230714244
 Transform:
   m_ObjectHideFlags: 0
@@ -1819,7 +1820,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1604969525}
-    PlayerPrefab: {fileID: 8149684190073921161, guid: 86959afce0271a947a9eb3269ed2cc76, type: 3}
+    PlayerPrefab: {fileID: 0}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 912a2c045c0a49a4da0a3ab678b20bff, type: 2}
