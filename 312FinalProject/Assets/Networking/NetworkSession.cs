@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -9,11 +10,15 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkSession : MonoBehaviour
 {
-    static NetworkSession networkSession;
-    string joinCode = string.Empty;
+    [SerializeField]
+    LobbyManager lobbyManager;
+
+    public static NetworkSession instance;
+    public string JoinCode { get; private set; }
 
     enum InitStatus
     {
@@ -28,9 +33,9 @@ public class NetworkSession : MonoBehaviour
     private void Awake()
     {
         //Singleton pattern
-        if (networkSession == null)
+        if (instance == null)
         {
-            networkSession = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
             initStatus = InitStatus.AwaitingSignIn;
         }
@@ -38,6 +43,8 @@ public class NetworkSession : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        JoinCode = string.Empty;
     }
 
     async void Start()
@@ -61,13 +68,16 @@ public class NetworkSession : MonoBehaviour
             //Sign into authn services
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
+
+        //Client disconnection
+        NetworkManager.Singleton.OnClientDisconnectCallback += HandlePlayerDisconnected;
     }
 
     /// <summary>
     /// Starts a host session for the player. On success, invokes the success method(s) and returns a join code. On fail,
     /// invokes the fail method(s) and returns the error message.
     /// </summary>
-    public static async Task StartHostAsync(int numOfClientsInSession, Action<string> OnHostSessionSuccessful, Action<string> OnHostSessionFailed)
+    public static async Task StartHostAsync(int numOfClientsInSession, Action<string> OnHostSessionFailed)
     {
         //Check if attmepting to start host before initialization
         if (initStatus != InitStatus.SignedIn)
@@ -100,8 +110,9 @@ public class NetworkSession : MonoBehaviour
             if (NetworkManager.Singleton.StartHost())
             {
                 //Session started successfully
-                OnHostSessionSuccessful?.Invoke(joinCode);
-                networkSession.joinCode = joinCode;
+                instance.JoinCode = joinCode;
+                await SceneManager.LoadSceneAsync(1);
+                instance.StartCoroutine(instance.SpawnLobbyManagerNextFrame());
             }
             else
             {
@@ -126,7 +137,7 @@ public class NetworkSession : MonoBehaviour
         }
     }
 
-    public static async Task StartClientAsync(string joinCode, Action<string> OnSessionJoined, Action<string> OnSessionNotFound)
+    public static async Task StartClientAsync(string joinCode, Action<string> OnSessionNotFound)
     {
         //Check if attmepting to start client before initialization
         if (initStatus != InitStatus.SignedIn)
@@ -153,8 +164,7 @@ public class NetworkSession : MonoBehaviour
             if (NetworkManager.Singleton.StartClient())
             {
                 //Session joined successfully
-                OnSessionJoined?.Invoke(joinCode);
-                networkSession.joinCode = joinCode;
+                instance.JoinCode = joinCode;
             }
             else
             {
@@ -179,10 +189,36 @@ public class NetworkSession : MonoBehaviour
         }
     }
 
+    private void HandlePlayerDisconnected(ulong obj)
+    {
+        if (NetworkManager.Singleton.LocalClientId == obj)
+        {
+            QuitSession();
+        }
+    }
+
     private void HandleAuthServiceSignIn()
     {
         Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
         initStatus = InitStatus.SignedIn;
         AuthenticationService.Instance.SignedIn -= HandleAuthServiceSignIn;
+    }
+
+    public static void QuitSession()
+    {
+        //End network session
+        NetworkManager.Singleton.Shutdown();
+
+        //Return to main menu
+        SceneManager.LoadScene(0);
+    }
+
+    IEnumerator SpawnLobbyManagerNextFrame()
+    {
+        yield return null;
+
+        //Spawn the lobby manager
+        LobbyManager newLobbyManager = Instantiate(instance.lobbyManager);
+        newLobbyManager.GetComponent<NetworkObject>().Spawn();
     }
 }

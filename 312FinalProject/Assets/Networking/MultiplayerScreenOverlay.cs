@@ -1,11 +1,16 @@
 using System;
 using System.Linq;
 using TMPro;
+using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MultiplayerScreenOverlay : MonoBehaviour
 {
+    [SerializeField]
+    Canvas canvas;
+
     [SerializeField]
     Button buttonStartHost;
 
@@ -39,6 +44,28 @@ public class MultiplayerScreenOverlay : MonoBehaviour
         inputFieldJoinCode.onValidateInput += EnsureValidJoinCodeInput;
     }
 
+    private void Start()
+    {
+        NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnects;
+    }
+
+    private void OnDisable()
+    {
+        buttonStartHost.onClick.RemoveListener(StartHostAsync);
+        buttonStartClient.onClick.RemoveListener(StartClientAsync);
+        inputFieldJoinCode.onValueChanged.RemoveListener(HandleJoinCodeChanged);
+        inputFieldJoinCode.onValidateInput -= EnsureValidJoinCodeInput;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnects;
+    }
+
+    private void HandleClientDisconnects(ulong clientID)
+    {
+        if (NetworkManager.Singleton.LocalClientId != clientID) return;
+
+        canvas.enabled = true;
+        SetInteraction(true);
+    }
+
     private async void StartClientAsync()
     {
         //Get the join code
@@ -47,7 +74,6 @@ public class MultiplayerScreenOverlay : MonoBehaviour
 
         await NetworkSession.StartClientAsync(
             joinCode,
-            HandleClientJoinSession,
             HandleClientFailedToJoinSession
             );
     }
@@ -58,8 +84,7 @@ public class MultiplayerScreenOverlay : MonoBehaviour
         SetInteraction(false);
 
         await NetworkSession.StartHostAsync(
-            numOfPlayers, 
-            HandleHostSessionSuccessful, 
+            numOfPlayers,
             HandleHostSessionFailed
             );
     }
@@ -71,11 +96,6 @@ public class MultiplayerScreenOverlay : MonoBehaviour
         inputFieldJoinCode.interactable = interactable;
     }
 
-    void HandleHostSessionSuccessful(string joinCode)
-    {
-        //Disable object; no longer needed
-        gameObject.SetActive(false);
-    }
     void HandleHostSessionFailed(string message)
     {
         SetInteraction(true);
@@ -84,18 +104,11 @@ public class MultiplayerScreenOverlay : MonoBehaviour
 
     }
 
-    private void HandleClientJoinSession(string message)
-    {
-        //Disable object; no longer needed
-        gameObject.SetActive(false);
-    }
-
     private void HandleClientFailedToJoinSession(string message)
     {
         SetInteraction(true);
         buttonStartClient.interactable = joinCodeIsValid;
         //Display error message
-
     }
 
     private char EnsureValidJoinCodeInput(string text, int charIndex, char addedChar)
