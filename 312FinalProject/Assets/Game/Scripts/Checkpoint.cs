@@ -3,6 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class Checkpoint : MonoBehaviour
 {
+    /*
     public int checkpointIndex;
 
     // When we hit a checkpoint, trigger checkpoint logic
@@ -14,4 +15,5 @@ public class Checkpoint : MonoBehaviour
             Debug.Log($"Current Checkpoint: {checkpointIndex}");
         }
     }
+    */
 }

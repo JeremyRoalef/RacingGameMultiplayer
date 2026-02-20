@@ -3,6 +3,7 @@ using TMPro;
 
 public class UIManager : MonoBehaviour
 {
+    /*
     public static UIManager Instance;
 
     [SerializeField] private GameObject mainMenuContainer;
@@ -147,4 +148,6 @@ public class UIManager : MonoBehaviour
         float seconds = (int)(time % 60);
         return $"{minutes:00}:{seconds:00}";
     }
+
+    */
 }

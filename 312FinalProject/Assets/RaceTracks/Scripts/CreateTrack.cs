@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CreateTrack : MonoBehaviour
 {
+    /*
     public static CreateTrack Instance;
 
     [Range(10, 300)] public int trackLength = 10;
@@ -223,4 +224,6 @@ public class CreateTrack : MonoBehaviour
             Mathf.RoundToInt(pos.z)
         );
     }
+
+    */
 }

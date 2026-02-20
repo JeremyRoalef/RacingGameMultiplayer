@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class WaitingForPlayerCanvas : MonoBehaviour
@@ -39,7 +40,10 @@ public class WaitingForPlayerCanvas : MonoBehaviour
     private void OnDisable()
     {
         //subscription expired
-        LobbyManager.instance.Clients.OnListChanged -= HandleClientsListChanged;
+        if (LobbyManager.instance != null)
+        {
+            LobbyManager.instance.Clients.OnListChanged -= HandleClientsListChanged;
+        }
     }
 
     private void HandleClientsListChanged(NetworkListEvent<ulong> changeEvent)
@@ -82,6 +86,13 @@ public class WaitingForPlayerCanvas : MonoBehaviour
     public void QuitSession()
     {
         NetworkSession.QuitSession();
+    }
+
+    public void StartGame()
+    {
+        //Only host can start game
+        if (!NetworkManager.Singleton.IsHost) return;
+        NetworkSession.StartGame();
     }
 
     IEnumerator InitializeLobbyUI()
