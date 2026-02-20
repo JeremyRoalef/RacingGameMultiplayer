@@ -100,7 +100,7 @@ public class NetworkSession : MonoBehaviour
         //Check if attmepting to start host before initialization
         if (initStatus != InitStatus.SignedIn)
         {
-            OnHostSessionFailed?.Invoke($"Not signed in. Cause: {initStatus.DisplayName()}");
+            OnHostSessionFailed?.Invoke($"Not signed in. Cause: {initStatus.ToString()}");
             return;
         }
 
@@ -160,7 +160,7 @@ public class NetworkSession : MonoBehaviour
         //Check if attmepting to start client before initialization
         if (initStatus != InitStatus.SignedIn)
         {
-            OnSessionNotFound?.Invoke($"Not signed in. Cause: {initStatus.DisplayName()}");
+            OnSessionNotFound?.Invoke($"Not signed in. Cause: {initStatus.ToString()}");
             return;
         }
 
