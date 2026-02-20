@@ -46,7 +46,10 @@ public class MultiplayerScreenOverlay : MonoBehaviour
 
     private void Start()
     {
-        NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnects;
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnects;
+        }
     }
 
     private void OnDisable()
@@ -55,7 +58,10 @@ public class MultiplayerScreenOverlay : MonoBehaviour
         buttonStartClient.onClick.RemoveListener(StartClientAsync);
         inputFieldJoinCode.onValueChanged.RemoveListener(HandleJoinCodeChanged);
         inputFieldJoinCode.onValidateInput -= EnsureValidJoinCodeInput;
-        NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnects;
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnects;
+        }
     }
 
     private void HandleClientDisconnects(ulong clientID)
