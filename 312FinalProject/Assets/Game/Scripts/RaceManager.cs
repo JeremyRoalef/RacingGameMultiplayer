@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
@@ -37,7 +38,7 @@ public class RaceManager : NetworkBehaviour
             availableSpawnPoints.Add(child);
         }
 
-        SpawnClients();
+        StartCoroutine(SpawnClients());
     }
 
     public override void OnNetworkSpawn()
@@ -48,8 +49,14 @@ public class RaceManager : NetworkBehaviour
         base.OnNetworkSpawn();
     }
 
-    private void SpawnClients()
+    IEnumerator SpawnClients()
     {
+        while (NetworkManager.Singleton == null)
+        {
+            Debug.Log("Waiting to spawn players");
+            yield return null;
+        }
+
         foreach (KeyValuePair<ulong, NetworkClient> clientKeyValue in NetworkManager.Singleton.ConnectedClients)
         {
             if (availableSpawnPoints.Count  == 0)

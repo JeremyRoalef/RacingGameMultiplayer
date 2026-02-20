@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4271261328100313318}
   - component: {fileID: 4035523721438336211}
   - component: {fileID: 6834652644071270630}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RearRightWheel
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -88,6 +88,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &384969332093834909
 GameObject:
@@ -99,9 +100,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2336893313936996959}
   - component: {fileID: 7963342607416415984}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RR
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,9 +155,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3753067165511701830}
   - component: {fileID: 7666941918415276554}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: FX
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -212,9 +213,9 @@ GameObject:
   - component: {fileID: 2576980496294574002}
   - component: {fileID: 5398326901101957738}
   - component: {fileID: 4159818345175517870}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -290,6 +291,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1431263232962525014
 GameObject:
@@ -300,9 +302,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5149278418852507807}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SkidFX
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -334,9 +336,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2133818535663475299}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Model
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -368,9 +370,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1963844576360288714}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: SuspensionPoint
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -400,9 +402,9 @@ GameObject:
   m_Component:
   - component: {fileID: 178967526311623469}
   - component: {fileID: 4736533199807957183}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RL
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -456,9 +458,9 @@ GameObject:
   - component: {fileID: 6439924880094608308}
   - component: {fileID: 76290816242336420}
   - component: {fileID: 4968615467258451678}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Spoiler
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -533,6 +535,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &3512913424776247916
 GameObject:
@@ -545,9 +548,9 @@ GameObject:
   - component: {fileID: 3894000940807302873}
   - component: {fileID: 2536229145644629163}
   - component: {fileID: 5408219554097422944}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FrontRightWheel
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -622,6 +625,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &3675701789244529768
 GameObject:
@@ -635,7 +639,7 @@ GameObject:
   - component: {fileID: 1343419343529041041}
   - component: {fileID: 2959744883177925929}
   - component: {fileID: 4588803104924916791}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -659,7 +663,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!96 &1343419343529041041
 TrailRenderer:
-  serializedVersion: 3
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -705,6 +709,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Time: 5
   m_PreviewTimeScale: 1
   m_Parameters:
@@ -763,7 +768,6 @@ TrailRenderer:
     shadowBias: 0.5
     generateLightingData: 0
   m_MinVertexDistance: 0.1
-  m_MaskInteraction: 0
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
@@ -5559,7 +5563,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &4588803104924916791
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5605,6 +5609,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 4
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -5636,7 +5641,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!1 &4957932903395270002
 GameObject:
   m_ObjectHideFlags: 0
@@ -5649,7 +5653,7 @@ GameObject:
   - component: {fileID: 8401361612225478142}
   - component: {fileID: 7845968176177401945}
   - component: {fileID: 5591276534340878695}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5673,7 +5677,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!96 &8401361612225478142
 TrailRenderer:
-  serializedVersion: 3
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5719,6 +5723,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Time: 5
   m_PreviewTimeScale: 1
   m_Parameters:
@@ -5777,7 +5782,6 @@ TrailRenderer:
     shadowBias: 0.5
     generateLightingData: 0
   m_MinVertexDistance: 0.1
-  m_MaskInteraction: 0
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
@@ -10573,7 +10577,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &5591276534340878695
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -10619,6 +10623,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 4
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -10650,7 +10655,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!1 &5198683060732712892
 GameObject:
   m_ObjectHideFlags: 0
@@ -10662,9 +10666,9 @@ GameObject:
   - component: {fileID: 4947116954526820293}
   - component: {fileID: 1753212324485721764}
   - component: {fileID: 3256657501959881850}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RearLeftWheel
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10739,6 +10743,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &5205186426915717102
 GameObject:
@@ -10750,9 +10755,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8543075152541882381}
   - component: {fileID: 4471147794946578571}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FL
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10805,9 +10810,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1685089884686676162}
   - component: {fileID: 4772474212881745434}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FR
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10850,6 +10855,37 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isFrontTire: 1
+--- !u!1 &6752905524435858582
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8794779431128425616}
+  m_Layer: 7
+  m_Name: CameraTrackingTarget
+  m_TagString: Player
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8794779431128425616
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6752905524435858582}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2097931418064837785}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7324832575658102302
 GameObject:
   m_ObjectHideFlags: 0
@@ -10859,9 +10895,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2540596237020074354}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: Acceleration Point
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10892,9 +10928,9 @@ GameObject:
   - component: {fileID: 1119509710091831529}
   - component: {fileID: 2647276629344542692}
   - component: {fileID: 37294548519060188}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FrontLeftWheel
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10969,6 +11005,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7513466023395935392
 GameObject:
@@ -10980,9 +11017,9 @@ GameObject:
   m_Component:
   - component: {fileID: 995492511618228029}
   - component: {fileID: 5943397276086188718}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: Rumbling
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11108,9 +11145,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5826959005338842503}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wheels
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11143,9 +11180,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1169691250790351269}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: SuspensionPoint
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11174,9 +11211,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7261297230945583925}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: SuspensionPoint
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11215,7 +11252,8 @@ GameObject:
   - component: {fileID: 7114585172613885148}
   - component: {fileID: -8436448356685904634}
   - component: {fileID: 3807614447214650821}
-  m_Layer: 3
+  - component: {fileID: -5427431409236410442}
+  m_Layer: 7
   m_Name: Car
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -11235,6 +11273,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 8794779431128425616}
   - {fileID: 2540596237020074354}
   - {fileID: 2133818535663475299}
   - {fileID: 3753067165511701830}
@@ -11330,7 +11369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1756431569
+  GlobalObjectIdHash: 1265534939
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -11469,6 +11508,20 @@ MonoBehaviour:
   - {fileID: 4772474212881745434}
   - {fileID: 4736533199807957183}
   - {fileID: 7963342607416415984}
+--- !u!114 &-5427431409236410442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8149684190073921161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acf0d5890246b36479015e840a9ff920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraSetup
+  ShowTopMostFoldoutHeaderGroup: 1
+  cameraFollowTarget: {fileID: 8794779431128425616}
 --- !u!1 &8496377568527595607
 GameObject:
   m_ObjectHideFlags: 0
@@ -11479,7 +11532,7 @@ GameObject:
   m_Component:
   - component: {fileID: 413921475985600340}
   - component: {fileID: 1726114077493135090}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: AudioSrc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11607,9 +11660,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7995784981670819969}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: SuspensionPoint
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -77,6 +77,20 @@ public class NetworkSession : MonoBehaviour
         SceneManager.sceneLoaded += HandleNewSceneLoaded;
     }
 
+    private void OnDisable()
+    {
+        if (AuthenticationService.Instance != null)
+        {
+            AuthenticationService.Instance.SignedIn -= HandleAuthServiceSignIn;
+        }
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= HandlePlayerDisconnected;
+        }
+
+        SceneManager.sceneLoaded -= HandleNewSceneLoaded;
+    }
+
     /// <summary>
     /// Starts a host session for the player. On success, invokes the success method(s) and returns a join code. On fail,
     /// invokes the fail method(s) and returns the error message.
