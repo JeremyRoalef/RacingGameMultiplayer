@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4271261328100313318}
   - component: {fileID: 4035523721438336211}
   - component: {fileID: 6834652644071270630}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: RearRightWheel
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100,9 +100,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2336893313936996959}
   - component: {fileID: 7963342607416415984}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: RR
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -155,9 +155,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3753067165511701830}
   - component: {fileID: 7666941918415276554}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: FX
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -213,9 +213,9 @@ GameObject:
   - component: {fileID: 2576980496294574002}
   - component: {fileID: 5398326901101957738}
   - component: {fileID: 4159818345175517870}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Body
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -293,6 +293,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1417601876674742266
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3154962690766511691}
+  m_Layer: 3
+  m_Name: Camera Follow Target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3154962690766511691
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417601876674742266}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2097931418064837785}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1431263232962525014
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,9 +333,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5149278418852507807}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SkidFX
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -336,9 +367,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2133818535663475299}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Model
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -370,9 +401,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1963844576360288714}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: SuspensionPoint
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -402,9 +433,9 @@ GameObject:
   m_Component:
   - component: {fileID: 178967526311623469}
   - component: {fileID: 4736533199807957183}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: RL
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -458,9 +489,9 @@ GameObject:
   - component: {fileID: 6439924880094608308}
   - component: {fileID: 76290816242336420}
   - component: {fileID: 4968615467258451678}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Spoiler
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -548,9 +579,9 @@ GameObject:
   - component: {fileID: 3894000940807302873}
   - component: {fileID: 2536229145644629163}
   - component: {fileID: 5408219554097422944}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: FrontRightWheel
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -639,7 +670,7 @@ GameObject:
   - component: {fileID: 1343419343529041041}
   - component: {fileID: 2959744883177925929}
   - component: {fileID: 4588803104924916791}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: RR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5653,7 +5684,7 @@ GameObject:
   - component: {fileID: 8401361612225478142}
   - component: {fileID: 7845968176177401945}
   - component: {fileID: 5591276534340878695}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: RL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10666,9 +10697,9 @@ GameObject:
   - component: {fileID: 4947116954526820293}
   - component: {fileID: 1753212324485721764}
   - component: {fileID: 3256657501959881850}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: RearLeftWheel
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10755,9 +10786,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8543075152541882381}
   - component: {fileID: 4471147794946578571}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: FL
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10810,9 +10841,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1685089884686676162}
   - component: {fileID: 4772474212881745434}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: FR
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10855,37 +10886,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isFrontTire: 1
---- !u!1 &6752905524435858582
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8794779431128425616}
-  m_Layer: 7
-  m_Name: CameraTrackingTarget
-  m_TagString: Player
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8794779431128425616
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6752905524435858582}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2097931418064837785}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7324832575658102302
 GameObject:
   m_ObjectHideFlags: 0
@@ -10895,9 +10895,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2540596237020074354}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: Acceleration Point
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10928,9 +10928,9 @@ GameObject:
   - component: {fileID: 1119509710091831529}
   - component: {fileID: 2647276629344542692}
   - component: {fileID: 37294548519060188}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: FrontLeftWheel
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11017,9 +11017,9 @@ GameObject:
   m_Component:
   - component: {fileID: 995492511618228029}
   - component: {fileID: 5943397276086188718}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: Rumbling
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11145,9 +11145,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5826959005338842503}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Wheels
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11180,9 +11180,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1169691250790351269}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: SuspensionPoint
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11211,9 +11211,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7261297230945583925}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: SuspensionPoint
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11252,8 +11252,8 @@ GameObject:
   - component: {fileID: 7114585172613885148}
   - component: {fileID: -8436448356685904634}
   - component: {fileID: 3807614447214650821}
-  - component: {fileID: -5427431409236410442}
-  m_Layer: 7
+  - component: {fileID: 4750993029828992158}
+  m_Layer: 3
   m_Name: Car
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -11273,7 +11273,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 8794779431128425616}
+  - {fileID: 3154962690766511691}
   - {fileID: 2540596237020074354}
   - {fileID: 2133818535663475299}
   - {fileID: 3753067165511701830}
@@ -11303,9 +11303,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!65 &7051002356735029247
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11442,7 +11442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 0
+  UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
 --- !u!114 &-7234164287641193562
@@ -11508,7 +11508,7 @@ MonoBehaviour:
   - {fileID: 4772474212881745434}
   - {fileID: 4736533199807957183}
   - {fileID: 7963342607416415984}
---- !u!114 &-5427431409236410442
+--- !u!114 &4750993029828992158
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11521,7 +11521,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraSetup
   ShowTopMostFoldoutHeaderGroup: 1
-  cameraFollowTarget: {fileID: 8794779431128425616}
+  cameraFollowTarget: {fileID: 3154962690766511691}
 --- !u!1 &8496377568527595607
 GameObject:
   m_ObjectHideFlags: 0
@@ -11532,7 +11532,7 @@ GameObject:
   m_Component:
   - component: {fileID: 413921475985600340}
   - component: {fileID: 1726114077493135090}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: AudioSrc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11660,9 +11660,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7995784981670819969}
-  m_Layer: 7
+  m_Layer: 3
   m_Name: SuspensionPoint
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
