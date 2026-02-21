@@ -1,9 +1,10 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Vehicle : MonoBehaviour
+public class Vehicle : NetworkBehaviour
 {
     [SerializeField] VehicleSO vehicleSettings;
     [SerializeField] Wheel[] wheels;
@@ -45,5 +46,12 @@ public class Vehicle : MonoBehaviour
     {
         if (groundedWheels.Contains(wheel)) return;
         groundedWheels.Add(wheel);
+    }
+
+    [Rpc(SendTo.Server)]
+    public void UpdateCheckpointServerRpc(int checkpointIndex)
+    {
+        //Tell the server that the client has hit a new checkpoint
+        RaceManager.Instance.HandleClientHitCheckpoint(OwnerClientId, checkpointIndex);
     }
 }

@@ -1,19 +1,20 @@
+using System;
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
 public class Checkpoint : MonoBehaviour
 {
-    /*
-    public int checkpointIndex;
+    public Action<Checkpoint, Vehicle> OnPlayerTriggerEnter;
 
-    // When we hit a checkpoint, trigger checkpoint logic
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.TryGetComponent<Vehicle>(out Vehicle vehicle))
         {
-            RaceManager.Instance.CheckpointReached(checkpointIndex);
-            Debug.Log($"Current Checkpoint: {checkpointIndex}");
+            if (vehicle.OwnerClientId != NetworkManager.Singleton.LocalClientId) return;
+
+            //The client has hit the new checkpoint
+            OnPlayerTriggerEnter?.Invoke(this, vehicle);
         }
     }
-    */
 }
