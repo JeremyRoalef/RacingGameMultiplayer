@@ -8,15 +8,11 @@ public class ClientPlayerMove : NetworkBehaviour
     PlayerInput playerInput;
 
     [SerializeField]
-    Movement movement;
-
-    [SerializeField]
     VehicleInput vehicleInput;
 
     private void Awake()
     {
         playerInput.enabled = false;
-        movement.enabled = false;
         vehicleInput.enabled = false;
     }
 
@@ -35,11 +31,7 @@ public class ClientPlayerMove : NetworkBehaviour
         if (IsOwner)
         {
             playerInput.enabled = true;
-            movement.enabled = true;
-        }
-        if (IsServer)
-        {
-            movement.enabled = true;
+            vehicleInput.enabled = true;
         }
     }
 

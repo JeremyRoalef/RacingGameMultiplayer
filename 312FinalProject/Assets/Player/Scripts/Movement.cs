@@ -1,8 +1,9 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Movement : MonoBehaviour
+public class Movement : NetworkBehaviour
 {
     public Action<float> OnMove;
     public Action OnSkidStart;
@@ -27,12 +28,13 @@ public class Movement : MonoBehaviour
 
     void FixedUpdate()
     {
-        //if (!RaceManager.Instance.raceStarted)
-        //return; // If the race isn't started, ignore all physics method calls
-
-        CalculateCarVelocity();
-        Move();
-        HandleSkidding();
+        //Only server & owner can control vehicle
+        if (IsServer)
+        {
+            CalculateCarVelocity();
+            Move();
+            HandleSkidding();
+        }
     }
 
     // Calculate car velocity as the ration between it's current forward speed and maximum speed.
@@ -65,7 +67,7 @@ public class Movement : MonoBehaviour
         Vector3 dragForce = transform.right * dragMagnitude;
 
         carRB.AddForceAtPosition(dragForce, carRB.worldCenterOfMass, ForceMode.Acceleration);
-        OnMove?.Invoke(carRB.linearVelocity.sqrMagnitude);
+        OnMoveRpc(carRB.linearVelocity.sqrMagnitude);
     }
 
     private void HandleSkidding()
@@ -75,13 +77,13 @@ public class Movement : MonoBehaviour
         {
             if (!isSkidding)
             {
-                OnSkidStart?.Invoke();
+                OnSkidStartRpc();
             }
             isSkidding = true;
         }
         else if (isSkidding)
         {
-            OnSkidStop?.Invoke();
+            OnSkidStopRpc();
             isSkidding = false;
         }
     }
@@ -89,4 +91,23 @@ public class Movement : MonoBehaviour
     public void ApplyForceAtPosition(Vector3 forceAmount, Vector3 position)
     => carRB.AddForceAtPosition(forceAmount, position);
     public Vector3 GetPointVelocity(Vector3 pos) => carRB.GetPointVelocity(pos);
+
+    [Rpc(SendTo.Everyone)]
+    void OnMoveRpc(float moveValue)
+    {
+        CalculateCarVelocity();
+        OnMove?.Invoke(moveValue);
+    }
+
+    [Rpc(SendTo.Everyone)]
+    void OnSkidStartRpc()
+    {
+        OnSkidStart?.Invoke();
+    }
+    
+    [Rpc(SendTo.Everyone)]
+    void OnSkidStopRpc()
+    {
+        OnSkidStop?.Invoke();
+    }
 }

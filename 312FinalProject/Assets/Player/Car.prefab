@@ -11061,7 +11061,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 104.02
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -11459,7 +11459,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ClientPlayerMove
   ShowTopMostFoldoutHeaderGroup: 1
   playerInput: {fileID: 2380512843966077400}
-  movement: {fileID: 7114585172613885148}
   vehicleInput: {fileID: -8436448356685904634}
 --- !u!114 &7114585172613885148
 MonoBehaviour:
@@ -11473,6 +11472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb6e1778ee1100949bc544b862e844d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
+  ShowTopMostFoldoutHeaderGroup: 1
   carRB: {fileID: 5959945472867875677}
   vehicleInput: {fileID: -8436448356685904634}
   vehicle: {fileID: 3807614447214650821}
@@ -11576,7 +11576,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 100.8
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
