@@ -12,8 +12,7 @@ public class RaceManager : NetworkBehaviour
     [SerializeField]
     NetworkObject playerPrefab;
 
-    [SerializeField]
-    NetworkVariable<int> totalLaps;
+    static int TOTAL_LAPS = 3;
 
     public static RaceManager Instance { get; private set; }
     List<Transform> availableSpawnPoints = new List<Transform>();
@@ -49,7 +48,7 @@ public class RaceManager : NetworkBehaviour
         //Handle client disconnection
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
 
-        Debug.Log(totalLaps.Value);
+        Debug.Log(TOTAL_LAPS);
     }
 
     private void OnDisable()
@@ -117,7 +116,7 @@ public class RaceManager : NetworkBehaviour
         DebugMessageClientRpc($"{clientData.PlayerName} reached checkpoint {checkpointIndex}");
 
         clientData.SetCheckpointIndex(checkpointIndex);
-        if (clientData.CompletedLaps == totalLaps.Value)
+        if (clientData.CompletedLaps == TOTAL_LAPS)
         {
             clientData.FinishedRace = true;
             DebugMessageClientRpc($"{clientData.PlayerName} finished race");
