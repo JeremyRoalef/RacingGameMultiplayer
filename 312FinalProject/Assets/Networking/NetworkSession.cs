@@ -17,6 +17,9 @@ public class NetworkSession : MonoBehaviour
     [SerializeField]
     LobbyManager lobbyManager;
 
+    [SerializeField]
+    RaceManager raceManager;
+
     public static NetworkSession instance;
     public string JoinCode { get; private set; }
 
@@ -71,6 +74,21 @@ public class NetworkSession : MonoBehaviour
 
         //Client disconnection
         NetworkManager.Singleton.OnClientDisconnectCallback += HandlePlayerDisconnected;
+        SceneManager.sceneLoaded += HandleNewSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        if (AuthenticationService.Instance != null)
+        {
+            AuthenticationService.Instance.SignedIn -= HandleAuthServiceSignIn;
+        }
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= HandlePlayerDisconnected;
+        }
+
+        SceneManager.sceneLoaded -= HandleNewSceneLoaded;
     }
 
     /// <summary>
@@ -82,7 +100,7 @@ public class NetworkSession : MonoBehaviour
         //Check if attmepting to start host before initialization
         if (initStatus != InitStatus.SignedIn)
         {
-            OnHostSessionFailed?.Invoke($"Not signed in. Cause: {initStatus.DisplayName()}");
+            OnHostSessionFailed?.Invoke($"Not signed in. Cause: {initStatus.ToString()}");
             return;
         }
 
@@ -142,7 +160,7 @@ public class NetworkSession : MonoBehaviour
         //Check if attmepting to start client before initialization
         if (initStatus != InitStatus.SignedIn)
         {
-            OnSessionNotFound?.Invoke($"Not signed in. Cause: {initStatus.DisplayName()}");
+            OnSessionNotFound?.Invoke($"Not signed in. Cause: {initStatus.ToString()}");
             return;
         }
 
@@ -213,6 +231,30 @@ public class NetworkSession : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+    public static void StartGame()
+    {
+        if (!NetworkManager.Singleton.IsServer) return;
+
+        NetworkManager.Singleton.SceneManager.LoadScene("PreBuiltLevel", LoadSceneMode.Single);
+    }
+
+
+    private void HandleNewSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    {
+        if (!NetworkManager.Singleton.IsServer) return;
+
+        switch (scene.name)
+        {
+            case "":
+
+                break;
+            case "PreBuiltLevel":
+                Debug.Log("prebuilt level loaded");
+                StartCoroutine(SpawnRaceManagerNextFrame());
+                break;
+        }
+    }
+
     IEnumerator SpawnLobbyManagerNextFrame()
     {
         yield return null;
@@ -220,5 +262,15 @@ public class NetworkSession : MonoBehaviour
         //Spawn the lobby manager
         LobbyManager newLobbyManager = Instantiate(instance.lobbyManager);
         newLobbyManager.GetComponent<NetworkObject>().Spawn();
+    }
+
+    IEnumerator SpawnRaceManagerNextFrame()
+    {
+        yield return null;
+
+        //Spawn the race manager
+        RaceManager raceManager = Instantiate(instance.raceManager);
+        raceManager.GetComponent<NetworkObject>().Spawn();
+        Debug.Log("race manager spawned");
     }
 }
