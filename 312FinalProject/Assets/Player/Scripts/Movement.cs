@@ -23,13 +23,12 @@ public class Movement : NetworkBehaviour
     {
         // Initialize RB
         carRB = GetComponent<Rigidbody>();
-        carRB.isKinematic = true;
     }
 
     void FixedUpdate()
     {
         //Only server & owner can control vehicle
-        if (IsServer)
+        if (IsOwner)
         {
             CalculateCarVelocity();
             Move();

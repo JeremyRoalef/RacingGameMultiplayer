@@ -11406,7 +11406,7 @@ MonoBehaviour:
   RotationMaxInterpolationTime: 0.1
   ScaleLerpSmoothing: 1
   ScaleMaxInterpolationTime: 0.1
-  AuthorityMode: 0
+  AuthorityMode: 1
   TickSyncChildren: 0
   UseUnreliableDeltas: 0
   SyncPositionX: 1
@@ -11443,8 +11443,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkRigidbodyBaseExpanded: 0
   UseRigidBodyForMotion: 1
-  AutoUpdateKinematicState: 1
-  AutoSetKinematicOnDespawn: 1
+  AutoUpdateKinematicState: 0
+  AutoSetKinematicOnDespawn: 0
 --- !u!114 &-7234164287641193562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11460,6 +11460,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   playerInput: {fileID: 2380512843966077400}
   vehicleInput: {fileID: -8436448356685904634}
+  rb: {fileID: 5959945472867875677}
 --- !u!114 &7114585172613885148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11502,6 +11503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49eddf359e7725149b5831b20892c892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Vehicle
+  ShowTopMostFoldoutHeaderGroup: 1
   vehicleSettings: {fileID: 11400000, guid: d094a4b42d4da1a4fb358d6fccc31d64, type: 2}
   wheels:
   - {fileID: 4471147794946578571}
