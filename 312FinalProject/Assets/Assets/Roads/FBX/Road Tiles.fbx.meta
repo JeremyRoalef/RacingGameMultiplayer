@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Pavement_Mat
-    second: {fileID: 2100000, guid: f1944adbe31842548a34d3ead32acd72, type: 2}
+    second: {fileID: 2100000, guid: 345e18e3da43a8943ab45e73cae18a0b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
