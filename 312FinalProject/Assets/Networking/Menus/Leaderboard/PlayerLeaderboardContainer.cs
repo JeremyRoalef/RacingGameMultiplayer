@@ -15,8 +15,6 @@ public class PlayerLeaderboardContainer : MonoBehaviour
     [SerializeField]
     PlayerLeaderboard clientLeaderboardPrefab;
 
-    List<PlayerRaceData> playerScoreboard = new List<PlayerRaceData>();
-
     private void OnDisable()
     {
         if (RaceManager.Instance != null)
@@ -33,18 +31,18 @@ public class PlayerLeaderboardContainer : MonoBehaviour
         StartCoroutine(InitializeLeaderboardContainer());
     }
 
-    private void HandleClientHitCheckpoint(PlayerRaceData data)
+    private void HandleClientHitCheckpoint()
     {
         //Update the leaderboard to display any changes necessary in the order. Note that the order is determined by the child's
         //alignment in the leaderboard container
 
-
+        CreateLeaderboard();
     }
 
-    private void HandleClientAdded(PlayerRaceData clientData)
+    private void HandleClientAdded()
     {
         //Add a new client to the leaderbaord container & store it in the list
-
+        CreateLeaderboard();
     }
 
     IEnumerator InitializeLeaderboardContainer()
@@ -67,13 +65,13 @@ public class PlayerLeaderboardContainer : MonoBehaviour
     private void CreateLeaderboard()
     {
         Debug.Log("Creating the leaderboard");
+        List<PlayerRaceData> playerScoreboard = new List<PlayerRaceData>();
 
         //clear out the existing leaderboard
         foreach(Transform child in clientLeaderboardContainter)
         {
-            Destroy(child);
+            Destroy(child.gameObject);
         }
-        playerScoreboard.Clear();
 
         //Create new scoreboard
         foreach (PlayerRaceData playerData in RaceManager.Instance.playerRaceData)
@@ -83,10 +81,16 @@ public class PlayerLeaderboardContainer : MonoBehaviour
         }
 
         //Sort the entries in the list based on the laps each entry completed, then by the checkpoint hit
-        playerScoreboard.
+        playerScoreboard = playerScoreboard.
             OrderByDescending(x => x.CompletedLaps).
-            ThenByDescending(x => x.CurrentCheckpointIndex);
+            ThenByDescending(x => x.CurrentCheckpointIndex).ToList();
 
+        //Debugging
+        Debug.Log("Scoreboard sorted: ");
+        foreach (PlayerRaceData data in playerScoreboard)
+        {
+            Debug.Log(data.ToString());
+        }
 
         //Create the new leaderboard elements
         for (int clientRacePosition = 1; clientRacePosition <= playerScoreboard.Count; clientRacePosition++)

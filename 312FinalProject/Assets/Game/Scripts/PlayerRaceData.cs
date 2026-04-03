@@ -48,4 +48,9 @@ public struct PlayerRaceData : INetworkSerializable, IEquatable<PlayerRaceData>
         serializer.SerializeValue(ref TimeSpentDuringRace);
         serializer.SerializeValue(ref FinishedRace);
     }
+
+    public override string ToString()
+    {
+        return ClientID.ToString() + " " + CompletedLaps.ToString() + " " + CurrentCheckpointIndex.ToString();
+    }
 }

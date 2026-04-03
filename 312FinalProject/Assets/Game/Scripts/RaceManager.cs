@@ -7,8 +7,8 @@ using UnityEngine;
 
 public class RaceManager : NetworkBehaviour
 {
-    public Action<PlayerRaceData> OnClientAdded;
-    public Action<PlayerRaceData> OnClientHitCheckpoint;
+    public Action OnClientAdded;
+    public Action OnClientHitCheckpoint;
     public Action OnRaceInitialized;
 
     public Action OnRaceStart;
@@ -120,52 +120,43 @@ public class RaceManager : NetworkBehaviour
 
     public void HandleClientHitCheckpoint(ulong clientID, int checkpointIndex)
     {
-        //Get the client's race data from the networked list
-        bool foundClientData = false;
-        PlayerRaceData clientData = PlayerRaceData.Invalid;
-        foreach(PlayerRaceData playerData in playerRaceData)
+        //Update the client data in the list
+        for (int i = 0; i < playerRaceData.Count; i++)
         {
-            if (playerData.ClientID == clientID)
+            //Check if it's the right client ID
+            if (playerRaceData[i].ClientID != clientID) continue;
+            
+            //Get the client's data
+            PlayerRaceData clientData = playerRaceData[i];
+            DebugMessageClientRpc($"{clientData.PlayerName} reached checkpoint {checkpointIndex}");
+
+            //Check if client lapped or finished race
+            bool clientLapped = checkpointIndex == 0;
+            bool finishedRace = clientLapped && clientData.CompletedLaps == TOTAL_LAPS - 1;
+
+            //Set the client's new checkpoint data
+            PlayerRaceData newClientData = new PlayerRaceData(
+                clientID,
+                clientData.PlayerName,
+                checkpointIndex,
+                clientLapped ? clientData.CompletedLaps + 1 : clientData.CompletedLaps,
+                Time.time - timeWhenRaceStarted,
+                finishedRace
+                );
+
+            //Assign the client's new race data
+            playerRaceData[i] = newClientData;
+
+            if (finishedRace)
             {
-                //Initialize the client data & continue
-                foundClientData = true;
-                clientData = playerData;
-                continue;
+                //Handle client finished race
+                DebugMessageClientRpc($"{newClientData.PlayerName} finished race");
             }
+
+            DebugMessageClientRpc($"{newClientData.PlayerName} completed laps: {newClientData.CompletedLaps}");
+            OnClientHitCheckpointRPC(newClientData);
+            break;
         }
-        if (!foundClientData) return;
-
-        //Debugging
-        DebugMessageClientRpc($"{clientData.PlayerName} reached checkpoint {checkpointIndex}");
-
-        bool clientLapped = checkpointIndex == 0;
-        bool finishedRace = clientLapped && clientData.CompletedLaps == TOTAL_LAPS - 1;
-
-        //Remove the old client data from the list
-        playerRaceData.Remove(clientData);
-
-        //Set the client's new checkpoint
-        PlayerRaceData newClientData = new PlayerRaceData(
-            clientID,
-            clientData.PlayerName,
-            clientData.CurrentCheckpointIndex,
-            clientLapped ? clientData.CompletedLaps + 1 : clientData.CompletedLaps,
-            Time.time - timeWhenRaceStarted,
-            finishedRace
-            );
-        playerRaceData.Add(newClientData);
-
-        //Check if the client finished the race
-        if (finishedRace)
-        {
-            //Handle client finished race
-            DebugMessageClientRpc($"{newClientData.PlayerName} finished race");
-        }
-
-        DebugMessageClientRpc($"{newClientData.PlayerName} completed laps: {newClientData.CompletedLaps}");
-
-        //Tell any listeners that the client hit a checkpoint
-        OnClientHitCheckpointRPC(newClientData);
     }
 
     private void HandleClientDisconnected(ulong clientID)
@@ -196,13 +187,13 @@ public class RaceManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     void OnClientHitCheckpointRPC(PlayerRaceData clientData)
     {
-        OnClientHitCheckpoint?.Invoke(clientData);
+        OnClientHitCheckpoint?.Invoke();
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     void OnClientAddedRPC(PlayerRaceData clientData)
     {
-        OnClientAdded?.Invoke(clientData);
+        OnClientAdded?.Invoke();
     }
 
     [Rpc(SendTo.ClientsAndHost)]
