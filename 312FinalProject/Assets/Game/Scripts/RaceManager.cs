@@ -10,13 +10,16 @@ public class RaceManager : NetworkBehaviour
     public Action OnClientAdded;
     public Action OnClientHitCheckpoint;
     public Action OnRaceInitialized;
-
+    public Action<ulong> OnClientFinishedRace;
+    public Action OnRaceFinished;
     public Action OnRaceStart;
 
     [SerializeField]
     NetworkObject playerPrefab;
 
     static int TOTAL_LAPS = 3;
+
+    List<ulong> clientsWhoFinishedRace = new List<ulong>();
 
     public static RaceManager Instance { get; private set; }
     List<Transform> availableSpawnPoints = new List<Transform>();
@@ -150,7 +153,15 @@ public class RaceManager : NetworkBehaviour
             if (finishedRace)
             {
                 //Handle client finished race
+                clientsWhoFinishedRace.Add(clientID);
+                OnClientFinishedRaceRPC(clientID);
                 DebugMessageClientRpc($"{newClientData.PlayerName} finished race");
+
+                //Check if all clients have finished the race
+                if (clientsWhoFinishedRace.Count >= NetworkManager.Singleton.ConnectedClients.Count)
+                {
+                    OnRaceFinishedRPC();
+                }
             }
 
             DebugMessageClientRpc($"{newClientData.PlayerName} completed laps: {newClientData.CompletedLaps}");
@@ -201,5 +212,17 @@ public class RaceManager : NetworkBehaviour
     {
         Debug.Log("Race initialized");
         OnRaceInitialized?.Invoke();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void OnRaceFinishedRPC()
+    {
+        OnRaceFinished?.Invoke();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void OnClientFinishedRaceRPC(ulong clientId)
+    {
+        OnClientFinishedRace?.Invoke(clientId);
     }
 }
