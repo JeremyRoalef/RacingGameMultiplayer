@@ -7,6 +7,10 @@ using UnityEngine;
 
 public class RaceManager : NetworkBehaviour
 {
+    public Action<PlayerRaceData> OnClientAdded;
+    public Action<PlayerRaceData> OnClientHitCheckpoint;
+    public Action OnRaceInitialized;
+
     public Action OnRaceStart;
 
     [SerializeField]
@@ -16,7 +20,9 @@ public class RaceManager : NetworkBehaviour
 
     public static RaceManager Instance { get; private set; }
     List<Transform> availableSpawnPoints = new List<Transform>();
-    Dictionary<ulong, PlayerRaceData> playerRaceData = new Dictionary<ulong, PlayerRaceData>();
+    public NetworkList<PlayerRaceData> playerRaceData = new NetworkList<PlayerRaceData>();
+    //Dictionary<ulong, PlayerRaceData> playerRaceData = new Dictionary<ulong, PlayerRaceData>();
+    float timeWhenRaceStarted;
 
     private void Awake()
     {
@@ -95,44 +101,114 @@ public class RaceManager : NetworkBehaviour
 
             //Create player's race data
             PlayerRaceData raceData = new PlayerRaceData(
+                    clientKeyValue.Key,
                     clientKeyValue.Key.ToString(),
                     0,
                     0,
                     0,
                     false
                 );
-            playerRaceData.Add(clientKeyValue.Key, raceData);
+            playerRaceData.Add(raceData);
+
+            //tell any listeners about the new client addition
+            OnClientAddedRPC(raceData);
         }
+
+        //Race has been initialized
+        OnRaceInitializedRPC();
     }
 
     public void HandleClientHitCheckpoint(ulong clientID, int checkpointIndex)
     {
-        PlayerRaceData clientData = playerRaceData[clientID];
-        if (clientData == null)
+        //Get the client's race data from the networked list
+        bool foundClientData = false;
+        PlayerRaceData clientData = PlayerRaceData.Invalid;
+        foreach(PlayerRaceData playerData in playerRaceData)
         {
-            return;
+            if (playerData.ClientID == clientID)
+            {
+                //Initialize the client data & continue
+                foundClientData = true;
+                clientData = playerData;
+                continue;
+            }
         }
+        if (!foundClientData) return;
 
+        //Debugging
         DebugMessageClientRpc($"{clientData.PlayerName} reached checkpoint {checkpointIndex}");
 
-        clientData.SetCheckpointIndex(checkpointIndex);
-        if (clientData.CompletedLaps == TOTAL_LAPS)
+        bool clientLapped = checkpointIndex == 0;
+        bool finishedRace = clientLapped && clientData.CompletedLaps == TOTAL_LAPS - 1;
+
+        //Remove the old client data from the list
+        playerRaceData.Remove(clientData);
+
+        //Set the client's new checkpoint
+        PlayerRaceData newClientData = new PlayerRaceData(
+            clientID,
+            clientData.PlayerName,
+            clientData.CurrentCheckpointIndex,
+            clientLapped ? clientData.CompletedLaps + 1 : clientData.CompletedLaps,
+            Time.time - timeWhenRaceStarted,
+            finishedRace
+            );
+        playerRaceData.Add(newClientData);
+
+        //Check if the client finished the race
+        if (finishedRace)
         {
-            clientData.FinishedRace = true;
-            DebugMessageClientRpc($"{clientData.PlayerName} finished race");
+            //Handle client finished race
+            DebugMessageClientRpc($"{newClientData.PlayerName} finished race");
         }
 
-        DebugMessageClientRpc($"{clientData.PlayerName} completed laps: {clientData.CompletedLaps}");
+        DebugMessageClientRpc($"{newClientData.PlayerName} completed laps: {newClientData.CompletedLaps}");
+
+        //Tell any listeners that the client hit a checkpoint
+        OnClientHitCheckpointRPC(newClientData);
     }
 
     private void HandleClientDisconnected(ulong clientID)
     {
-        playerRaceData.Remove(clientID);
+        bool foundClientData = false;
+        PlayerRaceData clientData = PlayerRaceData.Invalid;
+        foreach (PlayerRaceData playerData in playerRaceData)
+        {
+            if (playerData.ClientID == clientID)
+            {
+                //Initialize the client data & continue
+                foundClientData = true;
+                clientData = playerData;
+                continue;
+            }
+        }
+        if (!foundClientData) return;
+
+        playerRaceData.Remove(clientData);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     void DebugMessageClientRpc(string message)
     {
         Debug.Log(message);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void OnClientHitCheckpointRPC(PlayerRaceData clientData)
+    {
+        OnClientHitCheckpoint?.Invoke(clientData);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void OnClientAddedRPC(PlayerRaceData clientData)
+    {
+        OnClientAdded?.Invoke(clientData);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void OnRaceInitializedRPC()
+    {
+        Debug.Log("Race initialized");
+        OnRaceInitialized?.Invoke();
     }
 }

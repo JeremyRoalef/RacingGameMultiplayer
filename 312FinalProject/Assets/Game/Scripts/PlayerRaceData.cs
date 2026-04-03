@@ -1,34 +1,51 @@
-using UnityEngine;
+using System;
+using Unity.Collections;
+using Unity.Netcode;
 
-public class PlayerRaceData
+public struct PlayerRaceData : INetworkSerializable, IEquatable<PlayerRaceData>
 {
-    public string PlayerName { get; set; }
-    public int CurrentCheckpointIndex { get; set; }
-    public int CompletedLaps { get; private set; }
-    public float TimeSpentDuringRace { get; set; }
-    public bool FinishedRace {  get; set; }
+    public ulong ClientID;
+    public FixedString32Bytes PlayerName;
+    public int CurrentCheckpointIndex;
+    public int CompletedLaps;
+    public float TimeSpentDuringRace;
+    public bool FinishedRace;
+
+    public static PlayerRaceData Invalid = new PlayerRaceData(99999, "", -1, -1, -1, false);
 
     public PlayerRaceData(
-        string playerName, 
+        ulong clientID, 
+        FixedString32Bytes playerName, 
         int currentCheckpointIndex, 
-        int currentLap, 
+        int completedLaps, 
         float timeSpentDuringRace, 
-        bool finishedRace
-        )
+        bool finishedRace)
     {
-        this.PlayerName = playerName;
-        this.CurrentCheckpointIndex = currentCheckpointIndex;
-        this.CompletedLaps = currentLap;
-        this.TimeSpentDuringRace = timeSpentDuringRace;
-        this.FinishedRace = finishedRace;
+        ClientID = clientID;
+        PlayerName = playerName;
+        CurrentCheckpointIndex = currentCheckpointIndex;
+        CompletedLaps = completedLaps;
+        TimeSpentDuringRace = timeSpentDuringRace;
+        FinishedRace = finishedRace;
     }
 
-    public void SetCheckpointIndex(int newIndex)
+    public bool Equals(PlayerRaceData other)
     {
-        if (newIndex == 0)
-        {
-            //player has lapped
-            CompletedLaps++;
-        }
+        return other.ClientID == ClientID &&
+            other.PlayerName == PlayerName &&
+            other.CurrentCheckpointIndex == CurrentCheckpointIndex &&
+            other.CompletedLaps == CompletedLaps &&
+            other.TimeSpentDuringRace == TimeSpentDuringRace &&
+            other.FinishedRace == FinishedRace;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref ClientID);
+        serializer.SerializeValue(ref CompletedLaps);
+        serializer.SerializeValue(ref CurrentCheckpointIndex);
+        serializer.SerializeValue(ref CompletedLaps);
+        serializer.SerializeValue(ref TimeSpentDuringRace);
+        serializer.SerializeValue(ref FinishedRace);
     }
 }
