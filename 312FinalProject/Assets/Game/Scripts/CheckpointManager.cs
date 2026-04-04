@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CheckpointManager : MonoBehaviour
 {
+    public static CheckpointManager Instance;
+
     [SerializeField]
     CheckpointGroup[] checkpointGroups;
 
@@ -14,6 +16,16 @@ public class CheckpointManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.LogError("Multiple checkpoint managers found in scene");
+            Destroy(gameObject);
+        }
+
         if (checkpointGroups.Length == 0)
         {
             Debug.LogError("Error: Checkpoint group uninitialized for active scene");
@@ -83,5 +95,10 @@ public class CheckpointManager : MonoBehaviour
         {
             playerHasHitFirstCheckpoint = true;
         }
+    }
+
+    public Checkpoint GetCurrentCheckpoint()
+    {
+        return currentCheckpoint;
     }
 }

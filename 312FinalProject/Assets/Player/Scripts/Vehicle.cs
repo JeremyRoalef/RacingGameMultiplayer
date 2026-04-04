@@ -3,9 +3,13 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Vehicle : NetworkBehaviour
 {
+    [SerializeField]
+    InputActionReference restartAtCheckpoint;
+
     [SerializeField]
     Transform cameraFollowLookAtTarget;
 
@@ -16,6 +20,10 @@ public class Vehicle : NetworkBehaviour
 
     [SerializeField] BoxCollider vehicleCollider;
     [SerializeField] Transform[] parentRendererAndFX;
+    [SerializeField] Rigidbody rb;
+
+    Vector3 startingPos;
+    Quaternion startingRotation;
 
     public bool IsGrounded { get { return groundedWheels.Count >= 2; } }
     public VehicleSO VehicleSettings { get { return vehicleSettings; } }
@@ -39,6 +47,36 @@ public class Vehicle : NetworkBehaviour
         }
 
         RaceManager.Instance.OnClientFinishedRace += HandleThisClientFinishedRace;
+        restartAtCheckpoint.action.performed += RestartAtCheckpoint;
+
+        startingPos = transform.position;
+        startingRotation = transform.rotation;
+    }
+
+    private void RestartAtCheckpoint(InputAction.CallbackContext context)
+    {
+        if (!IsOwner) return;
+        Debug.Log("Owner wants to restart at checkpoint");
+
+        //Reset rigidbody velocity and rotation
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.Sleep();
+
+        //Restart the owner at the last checkpoint they reached (set their position to the last checkpoint)
+        Transform lastCheckpointTransform = CheckpointManager.Instance.GetCurrentCheckpoint().transform;
+        if (lastCheckpointTransform != null)
+        {
+            rb.position = lastCheckpointTransform.position;
+            rb.rotation = lastCheckpointTransform.rotation;
+        }
+        else
+        {
+            rb.position = startingPos;
+            rb.rotation = startingRotation;
+        }
+
+        rb.WakeUp();
     }
 
     private void HandleThisClientFinishedRace(ulong clientID)
