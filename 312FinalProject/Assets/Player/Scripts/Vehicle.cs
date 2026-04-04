@@ -6,15 +6,26 @@ using UnityEngine;
 
 public class Vehicle : NetworkBehaviour
 {
+    [SerializeField]
+    Transform cameraFollowLookAtTarget;
+
+    public static List<Vehicle> Instances = new List<Vehicle>();
+
     [SerializeField] VehicleSO vehicleSettings;
     [SerializeField] Wheel[] wheels;
+
+    [SerializeField] BoxCollider vehicleCollider;
+    [SerializeField] Transform[] parentRendererAndFX;
 
     public bool IsGrounded { get { return groundedWheels.Count >= 2; } }
     public VehicleSO VehicleSettings { get { return vehicleSettings; } }
 
     List<Wheel> groundedWheels = new List<Wheel>();
+
     private void OnEnable()
     {
+        Instances.Add(this);
+
         //Subscribe for wheel grounded check
         foreach (Wheel wheel in wheels)
         {
@@ -26,10 +37,26 @@ public class Vehicle : NetworkBehaviour
         {
             Debug.LogError("Null vehicle settings");
         }
+
+        RaceManager.Instance.OnClientFinishedRace += HandleThisClientFinishedRace;
+    }
+
+    private void HandleThisClientFinishedRace(ulong clientID)
+    {
+        if (OwnerClientId != clientID) return;
+        
+        //The vehicle is no longer needed; Hide & disable collision
+        vehicleCollider.enabled = false;
+        foreach(Transform rendererOrFX in parentRendererAndFX)
+        {
+            rendererOrFX.gameObject.SetActive(false);
+        }
     }
 
     private void OnDisable()
     {
+        Instances.Remove(this);
+
         //Unsubscribe from wheel grounded check
         foreach (Wheel wheel in wheels)
         {
@@ -37,6 +64,17 @@ public class Vehicle : NetworkBehaviour
             wheel.OnWheelUngrounded -= HandleWheelUngrounded;
         }
     }
+
+    public ulong GetOwnerClientID()
+    {
+        return OwnerClientId;
+    }
+
+    public Transform GetCameraFollowLookAtTransform()
+    {
+        return cameraFollowLookAtTarget;
+    }
+
     private void HandleWheelUngrounded(Wheel wheel)
     {
         groundedWheels.Remove(wheel);

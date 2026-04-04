@@ -17,9 +17,9 @@ public class RaceManager : NetworkBehaviour
     [SerializeField]
     NetworkObject playerPrefab;
 
-    static int TOTAL_LAPS = 3;
+    static int TOTAL_LAPS = 1;
 
-    List<ulong> clientsWhoFinishedRace = new List<ulong>();
+    public List<ulong> clientsWhoFinishedRace = new List<ulong>();
 
     public static RaceManager Instance { get; private set; }
     List<Transform> availableSpawnPoints = new List<Transform>();
@@ -217,12 +217,17 @@ public class RaceManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     void OnRaceFinishedRPC()
     {
+        //Fire an event to handle the race being finished locally
         OnRaceFinished?.Invoke();
     }
 
     [Rpc(SendTo.ClientsAndHost)]
     void OnClientFinishedRaceRPC(ulong clientId)
     {
+        //Update the clients who finished race locally
+        clientsWhoFinishedRace.Add(clientId);
+        
+        //Pass an event to handle a client finishing the race locally
         OnClientFinishedRace?.Invoke(clientId);
     }
 }

@@ -11369,7 +11369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1265534939
+  GlobalObjectIdHash: 1756431569
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -11504,12 +11504,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Vehicle
   ShowTopMostFoldoutHeaderGroup: 1
+  cameraFollowLookAtTarget: {fileID: 3154962690766511691}
   vehicleSettings: {fileID: 11400000, guid: d094a4b42d4da1a4fb358d6fccc31d64, type: 2}
   wheels:
   - {fileID: 4471147794946578571}
   - {fileID: 4772474212881745434}
   - {fileID: 4736533199807957183}
   - {fileID: 7963342607416415984}
+  vehicleCollider: {fileID: 7051002356735029247}
+  parentRendererAndFX:
+  - {fileID: 2133818535663475299}
+  - {fileID: 3753067165511701830}
 --- !u!114 &4750993029828992158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11523,7 +11528,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraSetup
   ShowTopMostFoldoutHeaderGroup: 1
-  cameraFollowTarget: {fileID: 3154962690766511691}
+  ownerVehicle: {fileID: 3807614447214650821}
 --- !u!1 &8496377568527595607
 GameObject:
   m_ObjectHideFlags: 0
