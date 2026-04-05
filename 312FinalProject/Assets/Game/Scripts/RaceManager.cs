@@ -158,8 +158,11 @@ public class RaceManager : NetworkBehaviour
                 DebugMessageClientRpc($"{newClientData.PlayerName} finished race");
 
                 //Check if all clients have finished the race
+                DebugMessageClientRpc("Clients who finished race: " + clientsWhoFinishedRace.Count);
+
                 if (clientsWhoFinishedRace.Count >= NetworkManager.Singleton.ConnectedClients.Count)
                 {
+                    DebugMessageClientRpc("All clients finished race, OnRaceFinishedRPC");
                     OnRaceFinishedRPC();
                 }
             }
@@ -224,9 +227,12 @@ public class RaceManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     void OnClientFinishedRaceRPC(ulong clientId)
     {
-        //Update the clients who finished race locally
-        clientsWhoFinishedRace.Add(clientId);
-        
+        //Update the clients who finished race on everyone but the host
+        if (!IsHost)
+        {
+            clientsWhoFinishedRace.Add(clientId);
+        }
+
         //Pass an event to handle a client finishing the race locally
         OnClientFinishedRace?.Invoke(clientId);
     }
