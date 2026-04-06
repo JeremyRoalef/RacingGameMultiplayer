@@ -36,6 +36,11 @@ public class ClientPlayerMove : NetworkBehaviour
             playerInput.enabled = true;
             vehicleInput.enabled = true;
         }
+        else
+        {
+            //Remove player input scripts from scene if owner doesn't own it
+            Destroy(playerInput);
+        }
     }
 
     //[Rpc(SendTo.Server)]

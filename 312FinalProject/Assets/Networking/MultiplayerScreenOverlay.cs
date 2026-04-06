@@ -20,6 +20,7 @@ public class MultiplayerScreenOverlay : MonoBehaviour
 
     static int JOIN_CODE_LENGTH = 6;
     bool joinCodeIsValid = false;
+    bool isQuittingApplication = false;
 
     private void Awake()
     {
@@ -141,5 +142,24 @@ public class MultiplayerScreenOverlay : MonoBehaviour
             joinCodeIsValid = true;
             buttonStartClient.interactable = joinCodeIsValid;
         }
+    }
+
+    public void OnButtonQuitClicked()
+    {
+        //Do not make multiple application quit calls
+        if (isQuittingApplication) return;
+
+        Debug.Log("Quitting Application");
+
+        isQuittingApplication = true;
+
+        //Shudown the network manager
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+
+        //Exit the application
+        Application.Quit();
     }
 }

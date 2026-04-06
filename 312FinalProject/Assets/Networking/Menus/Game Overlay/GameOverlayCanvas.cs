@@ -1,24 +1,39 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameOverlayCanvas : MonoBehaviour
 {
+    [SerializeField]
+    InputActionReference openPauseMenu;
+
+    [SerializeField]
+    InputActionReference closePauseMenu;
+
     [SerializeField]
     FinalScoreboard finalScoreboard;
 
     [SerializeField]
     GameObject leaderboardPanel;
 
+    [SerializeField]
+    PausePanel pausePanel;
+
     private void Awake()
     {
         finalScoreboard.gameObject.SetActive(false);
         leaderboardPanel.SetActive(true);
+
     }
 
     private void OnEnable()
     {
         StartCoroutine(SubscribeToRaceManager());
+
+        openPauseMenu.action.performed += OpenPauseMenu;
+        closePauseMenu.action.performed += ClosePauseMenu;
     }
 
     private void OnDisable()
@@ -27,6 +42,8 @@ public class GameOverlayCanvas : MonoBehaviour
         {
             RaceManager.Instance.OnRaceFinished -= HandleRaceFinished;
         }
+        openPauseMenu.action.performed -= OpenPauseMenu;
+        closePauseMenu.action.performed -= ClosePauseMenu;
     }
 
     private void HandleRaceFinished()
@@ -51,6 +68,25 @@ public class GameOverlayCanvas : MonoBehaviour
         leaderboardPanel.SetActive(false);
     }
 
+    private void ClosePauseMenu(InputAction.CallbackContext context)
+    {
+        ClosePauseMenu();
+    }
+
+    void ClosePauseMenu()
+    {
+        pausePanel.TogglePausePanel(false);
+        PlayerInput playerInput = FindFirstObjectByType<PlayerInput>();
+        playerInput.SwitchCurrentActionMap("Player");
+    }
+
+    private void OpenPauseMenu(InputAction.CallbackContext context)
+    {
+        pausePanel.TogglePausePanel(true);
+        PlayerInput playerInput = FindFirstObjectByType<PlayerInput>();
+        playerInput.SwitchCurrentActionMap("UI");
+    }
+
     IEnumerator SubscribeToRaceManager()
     {
         while (RaceManager.Instance == null)
@@ -59,5 +95,15 @@ public class GameOverlayCanvas : MonoBehaviour
         }
 
         RaceManager.Instance.OnRaceFinished += HandleRaceFinished;
+    }
+
+    public void OnButtonResumeGameClicked()
+    {
+        ClosePauseMenu();
+    }
+
+    public void OnButtonQuitGameClicked()
+    {
+        NetworkSession.QuitSession();
     }
 }

@@ -8,6 +8,7 @@ using UnityEngine;
 public class RaceManager : NetworkBehaviour
 {
     public Action OnClientAdded;
+    public Action OnClientRemoved;
     public Action OnClientHitCheckpoint;
     public Action OnRaceInitialized;
     public Action<ulong> OnClientFinishedRace;
@@ -54,10 +55,51 @@ public class RaceManager : NetworkBehaviour
         //Spawn clients
         StartCoroutine(SpawnClients());
 
-        //Handle client disconnection
+        //Handle client connection/disconnection
+        NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
 
         Debug.Log(TOTAL_LAPS);
+    }
+
+    private void HandleClientConnected(ulong clientID)
+    {
+        //Handle edge cases where client is already connected, but calls this method
+        foreach(PlayerRaceData clientData in playerRaceData)
+        {
+            if (clientData.ClientID == clientID)
+            {
+                //Player already exists. Do not handle them connecting
+                return;
+            }
+        }
+
+        if (availableSpawnPoints.Count == 0)
+        {
+            Debug.LogError("Error: Not enough spawn points for current session!");
+        }
+
+        //Get spawn position
+        Transform spawnPos = availableSpawnPoints.First();
+        availableSpawnPoints.Remove(spawnPos);
+
+        //Create & Assign player prefab
+        NetworkObject newPlayer = Instantiate(playerPrefab, spawnPos.position, spawnPos.rotation);
+        newPlayer.SpawnAsPlayerObject(clientID);
+
+        //Create player's race data
+        PlayerRaceData raceData = new PlayerRaceData(
+                clientID,
+                clientID.ToString(),
+                0,
+                0,
+                0,
+                false
+            );
+        playerRaceData.Add(raceData);
+
+        //tell any listeners about the new client addition
+        OnClientAddedRPC(raceData);
     }
 
     private void OnDisable()
@@ -190,6 +232,7 @@ public class RaceManager : NetworkBehaviour
         if (!foundClientData) return;
 
         playerRaceData.Remove(clientData);
+        OnClientRemovedRPC(clientData);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
@@ -208,6 +251,12 @@ public class RaceManager : NetworkBehaviour
     void OnClientAddedRPC(PlayerRaceData clientData)
     {
         OnClientAdded?.Invoke();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    void OnClientRemovedRPC(PlayerRaceData clientData)
+    {
+        OnClientRemoved?.Invoke();
     }
 
     [Rpc(SendTo.ClientsAndHost)]

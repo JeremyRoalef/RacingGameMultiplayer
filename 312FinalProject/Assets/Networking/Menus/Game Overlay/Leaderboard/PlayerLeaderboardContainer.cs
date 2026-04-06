@@ -45,6 +45,11 @@ public class PlayerLeaderboardContainer : MonoBehaviour
         CreateLeaderboard();
     }
 
+    void HandleClientRemoved()
+    {
+        CreateLeaderboard();
+    }
+
     IEnumerator InitializeLeaderboardContainer()
     {
         while (RaceManager.Instance == null)
@@ -55,7 +60,14 @@ public class PlayerLeaderboardContainer : MonoBehaviour
 
         //Race manager is initialized
         RaceManager.Instance.OnClientAdded += HandleClientAdded;
+        RaceManager.Instance.OnClientRemoved += HandleClientRemoved;
         RaceManager.Instance.OnClientHitCheckpoint += HandleClientHitCheckpoint;
+        
+        while (NetworkManager.Singleton == null)
+        {
+            //Wait for networkmanager to be initialized
+            yield return null;
+        }
 
         //Wait for next frame to initialize the leaderboard
         yield return null;
