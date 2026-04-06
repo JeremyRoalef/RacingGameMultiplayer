@@ -238,6 +238,12 @@ public class NetworkSession : MonoBehaviour
         NetworkManager.Singleton.SceneManager.LoadScene("PreBuiltLevel", LoadSceneMode.Single);
     }
 
+    public static void ReturnToWaitingForClientsScene()
+    {
+        if (!NetworkManager.Singleton.IsServer) return;
+
+        NetworkManager.Singleton.SceneManager.LoadScene("WaitingForClients", LoadSceneMode.Single);
+    }
 
     private void HandleNewSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -105,5 +106,14 @@ public class GameOverlayCanvas : MonoBehaviour
     public void OnButtonQuitGameClicked()
     {
         NetworkSession.QuitSession();
+    }
+
+    public void OnButtonContinueClicked()
+    {
+        //Return to waiting for clients scene
+        if (NetworkManager.Singleton.IsHost)
+        {
+            NetworkSession.ReturnToWaitingForClientsScene();
+        }
     }
 }

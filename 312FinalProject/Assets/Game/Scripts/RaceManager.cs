@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RaceManager : NetworkBehaviour
 {
@@ -21,12 +22,13 @@ public class RaceManager : NetworkBehaviour
     static int TOTAL_LAPS = 1;
 
     public List<ulong> clientsWhoFinishedRace = new List<ulong>();
-
     public static RaceManager Instance { get; private set; }
     List<Transform> availableSpawnPoints = new List<Transform>();
     public NetworkList<PlayerRaceData> playerRaceData = new NetworkList<PlayerRaceData>();
     //Dictionary<ulong, PlayerRaceData> playerRaceData = new Dictionary<ulong, PlayerRaceData>();
     float timeWhenRaceStarted;
+    List<NetworkObject> clientObjectsInGame = new List<NetworkObject>();
+
 
     private void Awake()
     {
@@ -58,8 +60,25 @@ public class RaceManager : NetworkBehaviour
         //Handle client connection/disconnection
         NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+        NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += CleanupRaceSession;
 
         Debug.Log(TOTAL_LAPS);
+    }
+
+    private void CleanupRaceSession(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    {
+        //Despawn all network object player prefabs
+        foreach (NetworkObject clientObj in clientObjectsInGame)
+        {
+            if (clientObj == null) continue;
+
+            //Despawn the client's object (no longer needed when leaving the race scene)
+            clientObj.Despawn();
+        }
+
+        //Despawn this race manager
+        NetworkObject thisNetworkObj = GetComponent<NetworkObject>();
+        thisNetworkObj.Despawn();
     }
 
     private void HandleClientConnected(ulong clientID)
@@ -86,6 +105,7 @@ public class RaceManager : NetworkBehaviour
         //Create & Assign player prefab
         NetworkObject newPlayer = Instantiate(playerPrefab, spawnPos.position, spawnPos.rotation);
         newPlayer.SpawnAsPlayerObject(clientID);
+        clientObjectsInGame.Add(newPlayer);
 
         //Create player's race data
         PlayerRaceData raceData = new PlayerRaceData(
@@ -109,6 +129,8 @@ public class RaceManager : NetworkBehaviour
             if (NetworkManager.Singleton != null)
             {
                 NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
+                NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
+                NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= CleanupRaceSession;
             }
         }
     }
@@ -143,6 +165,7 @@ public class RaceManager : NetworkBehaviour
             //Create & Assign player prefab
             NetworkObject newPlayer = Instantiate(playerPrefab, spawnPos.position, spawnPos.rotation);
             newPlayer.SpawnAsPlayerObject(clientKeyValue.Key);
+            clientObjectsInGame.Add(newPlayer);
 
             //Create player's race data
             PlayerRaceData raceData = new PlayerRaceData(
