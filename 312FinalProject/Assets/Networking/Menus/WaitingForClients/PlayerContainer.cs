@@ -21,10 +21,10 @@ public class PlayerContainer : MonoBehaviour
     }
 
     public ulong ClientID {  get; private set; }
-    public void Initialize(ulong clientID)
+    public void Initialize(ClientData clientData)
     {
-        ClientID = clientID;
-        StartCoroutine(GetPlayerName());
+        ClientID = clientData.ClientID;
+        playerName.text = clientData.PlayerName.ToString();
 
         if (ClientID == 0 || !NetworkManager.Singleton.IsHost)
         {
@@ -34,17 +34,6 @@ public class PlayerContainer : MonoBehaviour
 
     public void KickPlayer()
     {
-        LobbyManager.instance.RequestToKickPlayer(ClientID);
-    }
-
-    IEnumerator GetPlayerName()
-    {
-        while (!LobbyManager.instance.IsInitialized())
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
-
-        //Lobby manager is initialized: get player anme
-        playerName.text = LobbyManager.instance.GetClientName(clientID);
+        LobbyManager.Instance.RequestToKickPlayer(ClientID);
     }
 }

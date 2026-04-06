@@ -1,43 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class LobbyManager : NetworkBehaviour, IInitializable
 {
-    public static LobbyManager instance;
-    public NetworkList<ulong> Clients = new NetworkList<ulong>();
-    Dictionary<ulong, FixedString32Bytes> clientNames;
+    [SerializeField]
+    NetworkObject lobbyManagerPrefab;
+
+    public static LobbyManager Instance;
+    public NetworkList<ClientData> clientData = new NetworkList<ClientData>();
     bool initializedOnStart = false;
     bool initializedOnNetworkSpawn = false;
 
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        
-        if (clientNames == null)
-        {
-            clientNames = new Dictionary<ulong, FixedString32Bytes>();
-        }
-    }
-
     private void Start()
     {
-        if (IsClient)
+        if (Instance == null)
         {
-            //Get the player's name from the network session
-            string playerName = NetworkSession.instance.PlayerName;
-
-            //Send the player's name to the server
-            SendPlayerNameRpc(OwnerClientId, (FixedString32Bytes)playerName);
+            Instance = this;
         }
 
         initializedOnStart = true;
@@ -46,19 +28,26 @@ public class LobbyManager : NetworkBehaviour, IInitializable
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        
-        Debug.Log("Spawned over network");
 
-        if (!IsServer)
+        if (IsClient && !IsServer)
         {
-            initializedOnNetworkSpawn = true;
-            return;
+            SendPlayerNameRpc(NetworkSession.instance.PlayerName);
         }
-        //Manually add host
-        Clients.Add(NetworkManager.LocalClientId);
 
-        NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+
+
+            //Manually add host
+            ulong hostId = NetworkManager.LocalClientId;
+
+            clientData.Add(new ClientData(
+                hostId,
+                NetworkSession.instance.PlayerName
+            ));
+        }
 
         initializedOnNetworkSpawn = true;
     }
@@ -72,19 +61,24 @@ public class LobbyManager : NetworkBehaviour, IInitializable
 
         //Send host name to the server
         string playerName = NetworkSession.instance.PlayerName;
-        SendPlayerNameRpc(NetworkManager.LocalClientId, (FixedString32Bytes)playerName);
     }
 
     private void HandleClientDisconnected(ulong obj)
     {
         if (!IsServer) return;
-        Clients.Remove(obj);
+        for (int i = 0; i < clientData.Count; i++)
+        {
+            if (clientData[i].ClientID == obj)
+            {
+                clientData.Remove(clientData[i]);
+                break;
+            }
+        }
     }
 
     private void HandleClientConnected(ulong obj)
     {
         if (!IsServer) return;
-        Clients.Add(obj);
     }
 
     public void RequestToKickPlayer(ulong clientID)
@@ -105,36 +99,23 @@ public class LobbyManager : NetworkBehaviour, IInitializable
         }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-    void SendPlayerNameRpc(ulong clientID, FixedString32Bytes playerName)
+    [Rpc(SendTo.Server, RequireOwnership = false)]
+    void SendPlayerNameRpc(FixedString32Bytes playerName, RpcParams rpcParams = default)
     {
-        clientNames[clientID] = playerName;
-        SendNewPlayerNameRpc(clientID, playerName);
-    }
+        ulong senderId = rpcParams.Receive.SenderClientId;
 
-    [Rpc(SendTo.ClientsAndHost)]
-    void SendNewPlayerNameRpc(ulong clientID, FixedString32Bytes playerName)
-    {
-        if (clientNames == null) clientNames = new Dictionary<ulong, FixedString32Bytes>();
-        clientNames[clientID] = playerName;
-    }
+        Debug.Log("Client: " + senderId.ToString() + " sent their name to the server");
 
-    public string GetClientName(ulong clientID)
-    {
-        if (!IsServer)
+        // Prevent duplicates
+        for (int i = 0; i < clientData.Count; i++)
         {
-            Debug.Log("clients don't have access to this dictionary");
-            return "";
+            if (clientData[i].ClientID == senderId)
+            {
+                return;
+            }
         }
 
-        if (clientNames.ContainsKey(clientID))
-        {
-            return clientNames[clientID].ToString();
-        }
-        else
-        {
-            return "";
-        }
+        clientData.Add(new ClientData(senderId, playerName));
     }
 
     public bool IsInitialized()

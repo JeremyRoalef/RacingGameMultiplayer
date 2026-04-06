@@ -110,7 +110,7 @@ public class RaceManager : NetworkBehaviour
         //Create player's race data
         PlayerRaceData raceData = new PlayerRaceData(
                 clientID,
-                LobbyManager.instance.GetClientName(clientID),
+                GetClientName(clientID),
                 0,
                 0,
                 0,
@@ -170,7 +170,7 @@ public class RaceManager : NetworkBehaviour
             //Create player's race data
             PlayerRaceData raceData = new PlayerRaceData(
                     clientKeyValue.Key,
-                    LobbyManager.instance.GetClientName(clientKeyValue.Key),
+                    GetClientName(clientKeyValue.Key),
                     0,
                     0,
                     0,
@@ -307,5 +307,19 @@ public class RaceManager : NetworkBehaviour
 
         //Pass an event to handle a client finishing the race locally
         OnClientFinishedRace?.Invoke(clientId);
+    }
+
+    public string GetClientName(ulong clientID)
+    {
+        foreach (ClientData cd in LobbyManager.Instance.clientData)
+        {
+            if (cd.ClientID == clientID)
+            {
+                return cd.PlayerName.ToString();
+            }
+        }
+
+        Debug.Log("Client not found in list");
+        return "";
     }
 }
