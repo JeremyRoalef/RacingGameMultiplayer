@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -23,7 +24,7 @@ public class PlayerContainer : MonoBehaviour
     public void Initialize(ulong clientID)
     {
         ClientID = clientID;
-        playerName.text = ClientID.ToString();
+        StartCoroutine(GetPlayerName());
 
         if (ClientID == 0 || !NetworkManager.Singleton.IsHost)
         {
@@ -34,5 +35,16 @@ public class PlayerContainer : MonoBehaviour
     public void KickPlayer()
     {
         LobbyManager.instance.RequestToKickPlayer(ClientID);
+    }
+
+    IEnumerator GetPlayerName()
+    {
+        while (!LobbyManager.instance.IsInitialized())
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        //Lobby manager is initialized: get player anme
+        playerName.text = LobbyManager.instance.GetClientName(clientID);
     }
 }

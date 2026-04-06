@@ -110,7 +110,7 @@ public class RaceManager : NetworkBehaviour
         //Create player's race data
         PlayerRaceData raceData = new PlayerRaceData(
                 clientID,
-                clientID.ToString(),
+                LobbyManager.instance.GetClientName(clientID),
                 0,
                 0,
                 0,
@@ -170,7 +170,7 @@ public class RaceManager : NetworkBehaviour
             //Create player's race data
             PlayerRaceData raceData = new PlayerRaceData(
                     clientKeyValue.Key,
-                    clientKeyValue.Key.ToString(),
+                    LobbyManager.instance.GetClientName(clientKeyValue.Key),
                     0,
                     0,
                     0,

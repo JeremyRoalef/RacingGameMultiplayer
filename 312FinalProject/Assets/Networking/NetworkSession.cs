@@ -8,11 +8,10 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class NetworkSession : MonoBehaviour
+public class NetworkSession : MonoBehaviour, IInitializable
 {
     [SerializeField]
     LobbyManager lobbyManager;
@@ -22,6 +21,7 @@ public class NetworkSession : MonoBehaviour
 
     public static NetworkSession instance;
     public string JoinCode { get; private set; }
+    public string PlayerName { get; private set; }
 
     enum InitStatus
     {
@@ -32,6 +32,7 @@ public class NetworkSession : MonoBehaviour
 
     public static int MAX_CLIENTS_EXCLUDING_HOST = 15;
     static InitStatus initStatus = InitStatus.AwaitingInitialization;
+    bool isInitialized;
 
     private void Awake()
     {
@@ -75,6 +76,9 @@ public class NetworkSession : MonoBehaviour
         //Client disconnection
         NetworkManager.Singleton.OnClientDisconnectCallback += HandlePlayerDisconnected;
         SceneManager.sceneLoaded += HandleNewSceneLoaded;
+
+        //Session is initialized
+        isInitialized = true;
     }
 
     private void OnDisable()
@@ -129,7 +133,7 @@ public class NetworkSession : MonoBehaviour
             {
                 //Session started successfully
                 instance.JoinCode = joinCode;
-                await SceneManager.LoadSceneAsync(1);
+                await SceneManager.LoadSceneAsync("WaitingForClients");
                 instance.StartCoroutine(instance.SpawnLobbyManagerNextFrame());
             }
             else
@@ -228,7 +232,7 @@ public class NetworkSession : MonoBehaviour
         NetworkManager.Singleton.Shutdown();
 
         //Return to main menu
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("NetworkTest");
     }
 
     public static void StartGame()
@@ -278,5 +282,15 @@ public class NetworkSession : MonoBehaviour
         RaceManager raceManager = Instantiate(instance.raceManager);
         raceManager.GetComponent<NetworkObject>().Spawn();
         Debug.Log("race manager spawned");
+    }
+
+    public bool IsInitialized()
+    {
+        return isInitialized;
+    }
+
+    public static void SetPlayerName(string name)
+    {
+        instance.PlayerName = name;
     }
 }
