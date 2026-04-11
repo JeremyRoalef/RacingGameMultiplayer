@@ -51,6 +51,6 @@ public struct PlayerRaceData : INetworkSerializable, IEquatable<PlayerRaceData>
 
     public override string ToString()
     {
-        return ClientID.ToString() + " " + CompletedLaps.ToString() + " " + CurrentCheckpointIndex.ToString();
+        return ClientID.ToString() + " " + CompletedLaps.ToString() + " " + CurrentCheckpointIndex.ToString() + " " + PlayerName.ToString();
     }
 }

@@ -22,7 +22,6 @@ public class PlayerLeaderboardContainer : MonoBehaviour
             //Race manager is initialized
             RaceManager.Instance.OnClientAdded -= HandleClientAdded;
             RaceManager.Instance.OnClientHitCheckpoint -= HandleClientHitCheckpoint;
-            RaceManager.Instance.OnRaceInitialized -= CreateLeaderboard;
         }
     }
 
@@ -55,6 +54,12 @@ public class PlayerLeaderboardContainer : MonoBehaviour
         while (RaceManager.Instance == null)
         {
             //Wait until the race manager is initialized
+            yield return null;
+        }
+
+        //Wait for the race manager to be initialized
+        while (!RaceManager.Instance.IsInitialized())
+        {
             yield return null;
         }
 

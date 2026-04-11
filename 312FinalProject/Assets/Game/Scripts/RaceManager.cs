@@ -6,7 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class RaceManager : NetworkBehaviour
+public class RaceManager : NetworkBehaviour, IInitializable
 {
     public Action OnClientAdded;
     public Action OnClientRemoved;
@@ -29,6 +29,7 @@ public class RaceManager : NetworkBehaviour
     float timeWhenRaceStarted;
     List<NetworkObject> clientObjectsInGame = new List<NetworkObject>();
 
+    NetworkVariable<bool> isInitialized = new NetworkVariable<bool>(false);
 
     private void Awake()
     {
@@ -154,6 +155,18 @@ public class RaceManager : NetworkBehaviour
             yield return null;
         }
 
+        //Wait for the lobby manager
+        while (LobbyManager.Instance == null || !LobbyManager.Instance.IsInitialized())
+        {
+            yield return null;
+        }
+
+        //Wait for all client's data to sync from teh lobby manager
+        while (LobbyManager.Instance.clientData.Count < NetworkManager.Singleton.ConnectedClients.Count)
+        {
+            yield return null;
+        }
+
         foreach (KeyValuePair<ulong, NetworkClient> clientKeyValue in NetworkManager.Singleton.ConnectedClients)
         {
             if (availableSpawnPoints.Count  == 0)
@@ -187,6 +200,7 @@ public class RaceManager : NetworkBehaviour
 
         //Race has been initialized
         OnRaceInitializedRPC();
+        isInitialized.Value = true;
     }
 
     public void HandleClientHitCheckpoint(ulong clientID, int checkpointIndex)
@@ -324,5 +338,10 @@ public class RaceManager : NetworkBehaviour
 
         Debug.Log("Client not found in list");
         return "";
+    }
+
+    public bool IsInitialized()
+    {
+        return isInitialized.Value;
     }
 }
