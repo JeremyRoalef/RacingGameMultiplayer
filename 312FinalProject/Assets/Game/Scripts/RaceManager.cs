@@ -67,6 +67,9 @@ public class RaceManager : NetworkBehaviour
 
     private void CleanupRaceSession(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
+        //Don't deconstruct race session if you're in the race session
+        if (sceneName == "PreBuiltLevel") { return; }
+
         //Despawn all network object player prefabs
         foreach (NetworkObject clientObj in clientObjectsInGame)
         {
