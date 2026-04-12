@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -20,10 +21,10 @@ public class PlayerContainer : MonoBehaviour
     }
 
     public ulong ClientID {  get; private set; }
-    public void Initialize(ulong clientID)
+    public void Initialize(ClientData clientData)
     {
-        ClientID = clientID;
-        playerName.text = ClientID.ToString();
+        ClientID = clientData.ClientID;
+        playerName.text = clientData.PlayerName.ToString();
 
         if (ClientID == 0 || !NetworkManager.Singleton.IsHost)
         {
@@ -33,6 +34,6 @@ public class PlayerContainer : MonoBehaviour
 
     public void KickPlayer()
     {
-        LobbyManager.instance.RequestToKickPlayer(ClientID);
+        LobbyManager.Instance.RequestToKickPlayer(ClientID);
     }
 }

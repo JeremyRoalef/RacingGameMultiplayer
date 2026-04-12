@@ -1,38 +1,55 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public class LobbyManager : NetworkBehaviour
+public class LobbyManager : NetworkBehaviour, IInitializable
 {
-    public static LobbyManager instance;
-    public NetworkList<ulong> Clients = new NetworkList<ulong>();
+    [SerializeField]
+    NetworkObject lobbyManagerPrefab;
 
-    private void Awake()
+    public static LobbyManager Instance;
+    public NetworkList<ClientData> clientData = new NetworkList<ClientData>();
+    bool initializedOnStart = false;
+    bool initializedOnNetworkSpawn = false;
+
+    private void Start()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
+            Instance = this;
         }
 
-        //GetComponent<NetworkObject>().Spawn();
+        initializedOnStart = true;
     }
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log("Spawned over network");
-
-        if (!IsServer) return;
         base.OnNetworkSpawn();
 
-        //Manually add host
-        Clients.Add(NetworkManager.LocalClientId);
+        if (IsClient && !IsServer)
+        {
+            SendPlayerNameRpc(NetworkSession.instance.PlayerName);
+        }
 
-        NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+
+
+            //Manually add host
+            ulong hostId = NetworkManager.LocalClientId;
+
+            clientData.Add(new ClientData(
+                hostId,
+                NetworkSession.instance.PlayerName
+            ));
+        }
+
+        initializedOnNetworkSpawn = true;
     }
 
     public override void OnNetworkDespawn()
@@ -41,18 +58,27 @@ public class LobbyManager : NetworkBehaviour
         base.OnNetworkDespawn();
         NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
+
+        //Send host name to the server
+        string playerName = NetworkSession.instance.PlayerName;
     }
 
     private void HandleClientDisconnected(ulong obj)
     {
         if (!IsServer) return;
-        Clients.Remove(obj);
+        for (int i = 0; i < clientData.Count; i++)
+        {
+            if (clientData[i].ClientID == obj)
+            {
+                clientData.Remove(clientData[i]);
+                break;
+            }
+        }
     }
 
     private void HandleClientConnected(ulong obj)
     {
         if (!IsServer) return;
-        Clients.Add(obj);
     }
 
     public void RequestToKickPlayer(ulong clientID)
@@ -71,5 +97,29 @@ public class LobbyManager : NetworkBehaviour
         {
             NetworkManager.Singleton.DisconnectClient(clientID);
         }
+    }
+
+    [Rpc(SendTo.Server, RequireOwnership = false)]
+    void SendPlayerNameRpc(FixedString32Bytes playerName, RpcParams rpcParams = default)
+    {
+        ulong senderId = rpcParams.Receive.SenderClientId;
+
+        Debug.Log("Client: " + senderId.ToString() + " sent their name to the server");
+
+        // Prevent duplicates
+        for (int i = 0; i < clientData.Count; i++)
+        {
+            if (clientData[i].ClientID == senderId)
+            {
+                return;
+            }
+        }
+
+        clientData.Add(new ClientData(senderId, playerName));
+    }
+
+    public bool IsInitialized()
+    {
+        return initializedOnStart && initializedOnNetworkSpawn;
     }
 }

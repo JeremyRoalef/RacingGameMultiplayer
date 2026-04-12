@@ -11061,9 +11061,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 104.02
+  MaxDistance: 151.97
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -11071,23 +11071,23 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1
+      time: 0.04824817
+      value: 0.93595123
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -1.0066239
+      outSlope: -1.0066239
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -11096,7 +11096,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -11406,7 +11406,7 @@ MonoBehaviour:
   RotationMaxInterpolationTime: 0.1
   ScaleLerpSmoothing: 1
   ScaleMaxInterpolationTime: 0.1
-  AuthorityMode: 0
+  AuthorityMode: 1
   TickSyncChildren: 0
   UseUnreliableDeltas: 0
   SyncPositionX: 1
@@ -11443,8 +11443,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkRigidbodyBaseExpanded: 0
   UseRigidBodyForMotion: 1
-  AutoUpdateKinematicState: 1
-  AutoSetKinematicOnDespawn: 1
+  AutoUpdateKinematicState: 0
+  AutoSetKinematicOnDespawn: 0
 --- !u!114 &-7234164287641193562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11460,6 +11460,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   playerInput: {fileID: 2380512843966077400}
   vehicleInput: {fileID: -8436448356685904634}
+  rb: {fileID: 5959945472867875677}
 --- !u!114 &7114585172613885148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11502,12 +11503,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49eddf359e7725149b5831b20892c892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Vehicle
+  ShowTopMostFoldoutHeaderGroup: 1
+  restartAtCheckpoint: {fileID: -57233671466754184, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  cameraFollowLookAtTarget: {fileID: 3154962690766511691}
   vehicleSettings: {fileID: 11400000, guid: d094a4b42d4da1a4fb358d6fccc31d64, type: 2}
   wheels:
   - {fileID: 4471147794946578571}
   - {fileID: 4772474212881745434}
   - {fileID: 4736533199807957183}
   - {fileID: 7963342607416415984}
+  vehicleCollider: {fileID: 7051002356735029247}
+  parentRendererAndFX:
+  - {fileID: 2133818535663475299}
+  - {fileID: 3753067165511701830}
+  rb: {fileID: 5959945472867875677}
 --- !u!114 &4750993029828992158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11521,7 +11530,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraSetup
   ShowTopMostFoldoutHeaderGroup: 1
-  cameraFollowTarget: {fileID: 3154962690766511691}
+  ownerVehicle: {fileID: 3807614447214650821}
 --- !u!1 &8496377568527595607
 GameObject:
   m_ObjectHideFlags: 0
@@ -11576,9 +11585,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 100.8
+  MaxDistance: 160.7
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -11611,7 +11620,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

@@ -23,13 +23,12 @@ public class Movement : NetworkBehaviour
     {
         // Initialize RB
         carRB = GetComponent<Rigidbody>();
-        carRB.isKinematic = true;
     }
 
     void FixedUpdate()
     {
         //Only server & owner can control vehicle
-        if (IsServer)
+        if (IsOwner)
         {
             CalculateCarVelocity();
             Move();
@@ -41,7 +40,7 @@ public class Movement : NetworkBehaviour
     private void CalculateCarVelocity()
     {
         currentCarLocalVelocity = transform.InverseTransformDirection(carRB.linearVelocity);
-        CarVelocityRatio = currentCarLocalVelocity.z / vehicle.VehicleSettings.maxSpeed;
+        UpdateCarVelocityRatioRpc(currentCarLocalVelocity.z / vehicle.VehicleSettings.maxSpeed);
     }
 
     // Handle movement
@@ -95,7 +94,6 @@ public class Movement : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     void OnMoveRpc(float moveValue)
     {
-        CalculateCarVelocity();
         OnMove?.Invoke(moveValue);
     }
 
@@ -109,5 +107,11 @@ public class Movement : NetworkBehaviour
     void OnSkidStopRpc()
     {
         OnSkidStop?.Invoke();
+    }
+
+    [Rpc(SendTo.Everyone)]
+    void UpdateCarVelocityRatioRpc(float newVelocityRatio)
+    {
+        CarVelocityRatio = newVelocityRatio;
     }
 }
