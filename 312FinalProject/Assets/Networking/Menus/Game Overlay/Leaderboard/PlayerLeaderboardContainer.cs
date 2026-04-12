@@ -21,6 +21,7 @@ public class PlayerLeaderboardContainer : MonoBehaviour
         {
             //Race manager is initialized
             RaceManager.Instance.OnClientAdded -= HandleClientAdded;
+            RaceManager.Instance.OnClientRemoved -= HandleClientRemoved;
             RaceManager.Instance.OnClientHitCheckpoint -= HandleClientHitCheckpoint;
         }
     }

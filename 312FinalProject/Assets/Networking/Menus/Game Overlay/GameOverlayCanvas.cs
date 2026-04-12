@@ -7,12 +7,14 @@ using UnityEngine.InputSystem;
 
 public class GameOverlayCanvas : MonoBehaviour
 {
+    [Header("Input References")]
     [SerializeField]
     InputActionReference openPauseMenu;
 
     [SerializeField]
     InputActionReference closePauseMenu;
 
+    [Header("Object References")]
     [SerializeField]
     FinalScoreboard finalScoreboard;
 
@@ -26,19 +28,19 @@ public class GameOverlayCanvas : MonoBehaviour
     {
         finalScoreboard.gameObject.SetActive(false);
         leaderboardPanel.SetActive(true);
-
     }
 
     private void OnEnable()
     {
+        //Subscribe to events
         StartCoroutine(SubscribeToRaceManager());
-
         openPauseMenu.action.performed += OpenPauseMenu;
         closePauseMenu.action.performed += ClosePauseMenu;
     }
 
     private void OnDisable()
     {
+        //Unsubscribe from events
         if (RaceManager.Instance != null)
         {
             RaceManager.Instance.OnRaceFinished -= HandleRaceFinished;
@@ -47,18 +49,26 @@ public class GameOverlayCanvas : MonoBehaviour
         closePauseMenu.action.performed -= ClosePauseMenu;
     }
 
+    public void OnButtonResumeGameClicked() => ClosePauseMenu();
+    public void OnButtonQuitGameClicked() => NetworkSession.QuitSession();
+    public void OnButtonContinueClicked()
+    {
+        //Return to waiting for clients scene
+        if (NetworkManager.Singleton.IsHost)
+        {
+            NetworkSession.ReturnToWaitingForClientsScene();
+        }
+    }
+
     private void HandleRaceFinished()
     {
-        Debug.Log("Race is finished on overlay canvas");
-
         //Display the final scoreboard
         finalScoreboard.gameObject.SetActive(true);
         List<PlayerRaceData> playerRaceData = new List<PlayerRaceData>();
 
         //Get the player race data from the race manager (as a list)
-        foreach(PlayerRaceData raceData in RaceManager.Instance.playerRaceData)
+        foreach (PlayerRaceData raceData in RaceManager.Instance.playerRaceData)
         {
-            Debug.Log("Adding race data to list of player data");
             playerRaceData.Add(raceData);
         }
 
@@ -69,10 +79,7 @@ public class GameOverlayCanvas : MonoBehaviour
         leaderboardPanel.SetActive(false);
     }
 
-    private void ClosePauseMenu(InputAction.CallbackContext context)
-    {
-        ClosePauseMenu();
-    }
+    void ClosePauseMenu(InputAction.CallbackContext context) => ClosePauseMenu();
 
     void ClosePauseMenu()
     {
@@ -81,7 +88,7 @@ public class GameOverlayCanvas : MonoBehaviour
         playerInput.SwitchCurrentActionMap("Player");
     }
 
-    private void OpenPauseMenu(InputAction.CallbackContext context)
+    void OpenPauseMenu(InputAction.CallbackContext context)
     {
         pausePanel.TogglePausePanel(true);
         PlayerInput playerInput = FindFirstObjectByType<PlayerInput>();
@@ -90,30 +97,12 @@ public class GameOverlayCanvas : MonoBehaviour
 
     IEnumerator SubscribeToRaceManager()
     {
+        //Wait for the race manager to load
         while (RaceManager.Instance == null)
         {
             yield return null;
         }
 
         RaceManager.Instance.OnRaceFinished += HandleRaceFinished;
-    }
-
-    public void OnButtonResumeGameClicked()
-    {
-        ClosePauseMenu();
-    }
-
-    public void OnButtonQuitGameClicked()
-    {
-        NetworkSession.QuitSession();
-    }
-
-    public void OnButtonContinueClicked()
-    {
-        //Return to waiting for clients scene
-        if (NetworkManager.Singleton.IsHost)
-        {
-            NetworkSession.ReturnToWaitingForClientsScene();
-        }
     }
 }
