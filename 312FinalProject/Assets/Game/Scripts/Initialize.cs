@@ -37,7 +37,7 @@ public class Initialize : MonoBehaviour
         }
 
         //Everything is initialized; open main scene
-        SceneManager.LoadScene("NetworkTest"); //Change scene name eventually
+        SceneManager.LoadScene("MainMenu"); //Change scene name eventually
     }
 }
 

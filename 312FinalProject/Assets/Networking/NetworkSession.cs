@@ -133,7 +133,7 @@ public class NetworkSession : MonoBehaviour, IInitializable
             {
                 //Session started successfully
                 instance.JoinCode = joinCode;
-                await SceneManager.LoadSceneAsync("WaitingForClients");
+                await SceneManager.LoadSceneAsync("LobbyMenu");
                 instance.StartCoroutine(instance.SpawnLobbyManagerNextFrame());
             }
             else
@@ -232,7 +232,7 @@ public class NetworkSession : MonoBehaviour, IInitializable
         NetworkManager.Singleton.Shutdown();
 
         //Return to main menu
-        SceneManager.LoadScene("NetworkTest");
+        SceneManager.LoadScene("MainMenu");
     }
 
     public static void StartGame()
@@ -246,7 +246,7 @@ public class NetworkSession : MonoBehaviour, IInitializable
     {
         if (!NetworkManager.Singleton.IsServer) return;
 
-        NetworkManager.Singleton.SceneManager.LoadScene("WaitingForClients", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("LobbyMenu", LoadSceneMode.Single);
     }
 
     private void HandleNewSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
