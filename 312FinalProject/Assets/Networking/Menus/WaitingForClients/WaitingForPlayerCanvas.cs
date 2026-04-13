@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class WaitingForPlayerCanvas : MonoBehaviour
@@ -61,10 +59,6 @@ public class WaitingForPlayerCanvas : MonoBehaviour
         }
     }
 
-    private void HandleClientsListChanged(NetworkListEvent<ulong> changeEvent)
-    {
-
-    }
     private void AddPlayerToUI(ClientData clientData)
     {
         //Create the player container
@@ -88,10 +82,7 @@ public class WaitingForPlayerCanvas : MonoBehaviour
         }
     }
 
-    public void QuitSession()
-    {
-        NetworkSession.QuitSession();
-    }
+    public void QuitSession() => NetworkSession.QuitSession();
 
     public void StartGame()
     {

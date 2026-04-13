@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,8 +40,5 @@ public class InitCanvas : MonoBehaviour, IInitializable
         isInitialized = true;
     }
 
-    public bool IsInitialized()
-    {
-        return isInitialized;
-    }
+    public bool IsInitialized() => isInitialized;
 }
