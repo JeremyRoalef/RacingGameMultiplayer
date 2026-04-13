@@ -85,14 +85,14 @@ public class GameOverlayCanvas : MonoBehaviour
     {
         pausePanel.TogglePausePanel(false);
         PlayerInput playerInput = FindFirstObjectByType<PlayerInput>();
-        playerInput.SwitchCurrentActionMap("Player");
+        StartCoroutine(SwapActionMap(playerInput, "Player"));
     }
 
     void OpenPauseMenu(InputAction.CallbackContext context)
     {
         pausePanel.TogglePausePanel(true);
         PlayerInput playerInput = FindFirstObjectByType<PlayerInput>();
-        playerInput.SwitchCurrentActionMap("UI");
+        StartCoroutine(SwapActionMap(playerInput, "UI"));
     }
 
     IEnumerator SubscribeToRaceManager()
@@ -104,5 +104,12 @@ public class GameOverlayCanvas : MonoBehaviour
         }
 
         RaceManager.Instance.OnRaceFinished += HandleRaceFinished;
+    }
+
+    IEnumerator SwapActionMap(PlayerInput playerInput, string newActionMap)
+    {
+        //Wait 0.5 seconds to swap input. This removes same-binding bugs
+        yield return new WaitForSeconds(0.1f);
+        playerInput.SwitchCurrentActionMap(newActionMap);
     }
 }
