@@ -69,6 +69,7 @@ public class CameraSetup : NetworkBehaviour
             }
         }
         
+        //No follow target found
         if (!foundNewFollowTarget)
         {
             cinemachineCamera.Follow = null;
