@@ -9,10 +9,16 @@ public class VehicleInput : MonoBehaviour
     [SerializeField]
     InputActionReference moveInput;
 
-    private void Awake()
+    private void OnEnable()
     {
         moveInput.action.performed += HandleMovementPerformed;
         moveInput.action.canceled += HandleMovementPerformed;
+    }
+
+    private void OnDisable()
+    {
+        moveInput.action.performed -= HandleMovementPerformed;
+        moveInput.action.canceled -= HandleMovementPerformed;
     }
 
     private Vector2 movement;
@@ -22,8 +28,5 @@ public class VehicleInput : MonoBehaviour
         set { movement = value; }
     }
 
-    private void HandleMovementPerformed(InputAction.CallbackContext context)
-    {
-        movement = context.ReadValue<Vector2>();
-    }
+    private void HandleMovementPerformed(InputAction.CallbackContext context) => movement = context.ReadValue<Vector2>();
 }

@@ -19,20 +19,13 @@ public class ClientPlayerMove : NetworkBehaviour
         vehicleInput.enabled = false;
     }
 
-    //private void LateUpdate()
-    //{
-    //    if (!IsOwner) return;
-
-    //    //Pass player input to the server
-    //    UpdateInputServerRpc(vehicleInput.Movement);
-    //}
-
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
         if (IsOwner)
         {
+            //Allow the owner to send input to their vehicle
             playerInput.enabled = true;
             vehicleInput.enabled = true;
         }
@@ -42,11 +35,4 @@ public class ClientPlayerMove : NetworkBehaviour
             Destroy(playerInput);
         }
     }
-
-    //[Rpc(SendTo.Server)]
-    //void UpdateInputServerRpc(Vector2 move)
-    //{
-    //    //Update input server-side so the player can move their character
-    //    vehicleInput.Movement = move;
-    //}
 }

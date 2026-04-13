@@ -112,8 +112,5 @@ public class Wheel : MonoBehaviour
     }
 
     // Adjust tire visuals
-    private void SetTirePosition(GameObject tire, Vector3 targetPosition)
-    {
-        tire.transform.position = targetPosition;
-    }
+    private void SetTirePosition(GameObject tire, Vector3 targetPosition) => tire.transform.position = targetPosition;
 }
