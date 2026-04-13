@@ -790,6 +790,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1242214320349480028, guid: 3b8ec640682c2064ba9e26b31e0cc9e9, type: 3}
+      propertyPath: raceManagerPrefab
+      value: 
+      objectReference: {fileID: 6985181014222099929, guid: f6f1929618c36fe4b806c454a638a2df, type: 3}
+    - target: {fileID: 1242214320349480028, guid: 3b8ec640682c2064ba9e26b31e0cc9e9, type: 3}
+      propertyPath: lobbyManagerPrefab
+      value: 
+      objectReference: {fileID: 2566471564397210610, guid: eea2416cb720ce74891a6b0d95fedce7, type: 3}
     - target: {fileID: 3837987384724841881, guid: 3b8ec640682c2064ba9e26b31e0cc9e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -88.13741
