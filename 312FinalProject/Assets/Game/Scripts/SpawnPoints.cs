@@ -2,15 +2,6 @@ using UnityEngine;
 
 public class SpawnPoints : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    //Hello World!
+    //This is just a way to mark an object in the scene to be found. It serves no other functionality
 }

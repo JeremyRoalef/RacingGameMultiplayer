@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,25 +11,30 @@ public class DisconnectScreen : MonoBehaviour
     [SerializeField]
     Button buttonQuit;
 
-    private void Start()
+    private void Awake()
     {
-        NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnect;
-
         canvas.enabled = false;
+    }
+
+    private void OnEnable()
+    {
+        //Subscribe to events
+        StartCoroutine(ListenToNetworkManager());
         buttonQuit.onClick.AddListener(QuitSession);
     }
 
     private void OnDisable()
     {
-        NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnect;
+        //Unsubscribe from events
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnect;
+        }
+        buttonQuit.onClick.RemoveListener(QuitSession);
     }
 
-    private void QuitSession()
-    {
-        NetworkManager.Singleton.Shutdown();
-    }
+    private void QuitSession() => NetworkManager.Singleton.Shutdown();
 
     private void HandleClientDisconnect(ulong clientID)
     {
@@ -42,5 +48,17 @@ public class DisconnectScreen : MonoBehaviour
         if (NetworkManager.Singleton.LocalClientId != clientID) return;
 
         canvas.enabled = true;
+    }
+    IEnumerator ListenToNetworkManager()
+    {
+        //Wait for network manager to load
+        while (NetworkManager.Singleton == null)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        
+        //Subscribe to network manager events
+        NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnect;
     }
 }

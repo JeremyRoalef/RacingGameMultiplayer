@@ -20,19 +20,20 @@ public class PlayerContainer : MonoBehaviour
     }
 
     public ulong ClientID {  get; private set; }
-    public void Initialize(ulong clientID)
+    public void Initialize(ClientData clientData)
     {
-        ClientID = clientID;
-        playerName.text = ClientID.ToString();
+        //Get the client's ID from the received data
+        ClientID = clientData.ClientID;
 
+        //Display the player's name
+        playerName.text = clientData.PlayerName.ToString();
+
+        //Only give the host the ability to kick players
         if (ClientID == 0 || !NetworkManager.Singleton.IsHost)
         {
             buttonKickPlayer.gameObject.SetActive(false);
         }
     }
 
-    public void KickPlayer()
-    {
-        LobbyManager.instance.RequestToKickPlayer(ClientID);
-    }
+    public void KickPlayer() => LobbyManager.Instance.RequestToKickPlayer(ClientID);
 }

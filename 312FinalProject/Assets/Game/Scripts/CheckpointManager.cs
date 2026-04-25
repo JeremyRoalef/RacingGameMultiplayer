@@ -4,19 +4,37 @@ using UnityEngine;
 
 public class CheckpointManager : MonoBehaviour
 {
+    public static CheckpointManager Instance;
+
     [SerializeField]
     CheckpointGroup[] checkpointGroups;
 
     CheckpointGroup currentCheckpointGroup;
     Checkpoint currentCheckpoint;
 
+    bool playerHasHitFirstCheckpoint;
+
     private void Awake()
     {
-        if (checkpointGroups.Length == 0)
+        if (Instance == null)
         {
-            Debug.LogError("Error: Checkpoint group uninitialized for active scene");
+            Instance = this;
+        }
+        else
+        {
+            Debug.LogWarning("Multiple checkpoint managers found in scene");
+            Destroy(gameObject);
         }
 
+        if (checkpointGroups.Length == 0)
+        {
+            Debug.LogWarning("Error: Checkpoint group uninitialized for active scene");
+        }
+    }
+
+    private void OnEnable()
+    {
+        //Listen to when a player hits a given checkpoint
         foreach (CheckpointGroup checkpointGroup in checkpointGroups)
         {
             foreach (Checkpoint checkpoint in checkpointGroup.checkpoints)
@@ -29,6 +47,18 @@ public class CheckpointManager : MonoBehaviour
 
         //Initialize player current checkpoint
         currentCheckpoint = checkpointGroups.First().checkpoints.First();
+    }
+
+    private void OnDisable()
+    {
+        //Cleanup listening events
+        foreach (CheckpointGroup checkpointGroup in checkpointGroups)
+        {
+            foreach (Checkpoint checkpoint in checkpointGroup.checkpoints)
+            {
+                checkpoint.OnPlayerTriggerEnter -= HandlePlayerEnteredCheckpoint;
+            }
+        }
     }
 
     public void SetCurrentCheckpointGroup(CheckpointGroup checkpointGroup)
@@ -59,18 +89,34 @@ public class CheckpointManager : MonoBehaviour
     {
         currentCheckpoint = checkpoint;
 
-        //Handle player entered the checkpoint
-        int currentCheckpointGroupIndex = Array.IndexOf(checkpointGroups, currentCheckpointGroup);
-        vehicle.UpdateCheckpointServerRpc(currentCheckpointGroupIndex);
-
         //Set new active checkpoints
+        int currentCheckpointGroupIndex = Array.IndexOf(checkpointGroups, currentCheckpointGroup);
         int nextCheckpointGroupIndex = currentCheckpointGroupIndex + 1;
 
+        //Check if the next checkpoint group index exists. If not, set the next checkpoint group index to 0;
+        //player is about to lap
         if (nextCheckpointGroupIndex >= checkpointGroups.Length)
         {
             nextCheckpointGroupIndex = 0;
         }
 
         SetCurrentCheckpointGroup(checkpointGroups[nextCheckpointGroupIndex]);
+
+        //If this was the first cheeckpoint, don't send to server.
+        //This is to account for the first checkpoint accumulating laps.
+        if (playerHasHitFirstCheckpoint)
+        {
+            //Handle player entered the checkpoint
+            vehicle.UpdateCheckpointServerRpc(currentCheckpointGroupIndex);
+        }
+        else
+        {
+            playerHasHitFirstCheckpoint = true;
+        }
+    }
+
+    public Checkpoint GetCurrentCheckpoint()
+    {
+        return currentCheckpoint;
     }
 }

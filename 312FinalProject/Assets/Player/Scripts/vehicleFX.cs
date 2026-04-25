@@ -36,30 +36,37 @@ public class vehicleFX : MonoBehaviour
 
     void EnableSkidFX()
     {
+        //Play skid effects
         foreach (var skidMark in skidMarks)
         {
             skidMark.emitting = true;
         }
 
+        //Play smoke effects
         foreach (var smoke in skidSmokes)
         {
             smoke.Play();
         }
 
+        //Play the skid sound
         skidSound.Play();
     }
 
     void DisableSkidFX()
     {
+        //Stop skid effects
         foreach (var skidMark in skidMarks)
         {
             skidMark.emitting = false;
         }
+
+        //Stop smoke effects
         foreach (var smoke in skidSmokes)
         {
             smoke.Stop();
         }
 
+        //Stop playing skid sound
         skidSound.Stop();
     }
 }

@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class WaitingForPlayerCanvas : MonoBehaviour
@@ -40,40 +38,41 @@ public class WaitingForPlayerCanvas : MonoBehaviour
     private void OnDisable()
     {
         //subscription expired
-        if (LobbyManager.instance != null)
+        if (LobbyManager.Instance != null)
         {
-            LobbyManager.instance.Clients.OnListChanged -= HandleClientsListChanged;
+            LobbyManager.Instance.clientData.OnListChanged -= HandleClientsListChanged;
         }
     }
 
-    private void HandleClientsListChanged(NetworkListEvent<ulong> changeEvent)
+    private void HandleClientsListChanged(NetworkListEvent<ClientData> changeEvent)
     {
         switch (changeEvent.Type)
         {
             //New player added
-            case NetworkListEvent<ulong>.EventType.Add:
+            case NetworkListEvent<ClientData>.EventType.Add:
                 AddPlayerToUI(changeEvent.Value);
                 break;
             //Player removed
-            case NetworkListEvent<ulong>.EventType.Remove:
+            case NetworkListEvent<ClientData>.EventType.Remove:
                 RemovePlayerFromUI(changeEvent.Value);
                 break;
         }
     }
-    private void AddPlayerToUI(ulong value)
+
+    private void AddPlayerToUI(ClientData clientData)
     {
         //Create the player container
         PlayerContainer newPlayerContainer = Instantiate(playerContainerPrefab, playerContainerGroup);
-        newPlayerContainer.Initialize(value);
+        newPlayerContainer.Initialize(clientData);
 
         //Store for future reference
         playerContainers.Add(newPlayerContainer);
     }
-    private void RemovePlayerFromUI(ulong value)
+    private void RemovePlayerFromUI(ClientData clientData)
     {
         foreach (PlayerContainer playerContainer in playerContainers)
         {
-            if (playerContainer.ClientID == value)
+            if (playerContainer.ClientID == clientData.ClientID)
             {
                 //Remove player from container
                 playerContainers.Remove(playerContainer);
@@ -83,10 +82,7 @@ public class WaitingForPlayerCanvas : MonoBehaviour
         }
     }
 
-    public void QuitSession()
-    {
-        NetworkSession.QuitSession();
-    }
+    public void QuitSession() => NetworkSession.QuitSession();
 
     public void StartGame()
     {
@@ -97,19 +93,19 @@ public class WaitingForPlayerCanvas : MonoBehaviour
 
     IEnumerator InitializeLobbyUI()
     {
-        while (LobbyManager.instance == null)
+        while (LobbyManager.Instance == null)
         {
             yield return null; //No lobby manager, wait for next frame
             Debug.Log("waiting to find lobby manager");
         }
 
         //Lobby manager initialized
-        LobbyManager.instance.Clients.OnListChanged += HandleClientsListChanged;
+        LobbyManager.Instance.clientData.OnListChanged += HandleClientsListChanged;
         
         //Initialize UI with existing clients
-        foreach (ulong clientID in LobbyManager.instance.Clients)
+        foreach (ClientData clientData in LobbyManager.Instance.clientData)
         {
-            AddPlayerToUI(clientID);
+            AddPlayerToUI(clientData);
         }
     }
 }

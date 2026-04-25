@@ -1,58 +1,84 @@
-using System;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public class LobbyManager : NetworkBehaviour
+public class LobbyManager : NetworkBehaviour, IInitializable
 {
-    public static LobbyManager instance;
-    public NetworkList<ulong> Clients = new NetworkList<ulong>();
+    public static LobbyManager Instance;
+    public NetworkList<ClientData> clientData = new NetworkList<ClientData>();
 
-    private void Awake()
+    [SerializeField]
+    NetworkObject lobbyManagerPrefab;
+
+    bool initializedOnStart = false;
+    bool initializedOnNetworkSpawn = false;
+
+    private void Start()
     {
-        if (instance == null)
+        //Singleton pattern
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
-            Destroy(gameObject);
+            Debug.LogWarning("Multiple lobby managers found in scene!");
         }
-
-        //GetComponent<NetworkObject>().Spawn();
+        
+        initializedOnStart = true;
     }
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log("Spawned over network");
-
-        if (!IsServer) return;
         base.OnNetworkSpawn();
 
-        //Manually add host
-        Clients.Add(NetworkManager.LocalClientId);
+        //Handle clients sending name to the server
+        if (IsClient && !IsServer)
+        {
+            SendPlayerNameRpc(NetworkSession.instance.PlayerName);
+        }
 
-        NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
-        NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+        if (IsServer)
+        {
+            //Listen to when clients disconnect
+            NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+
+            //Manually add host
+            ulong hostId = NetworkManager.LocalClientId;
+
+            //Add the host client data
+            clientData.Add(new ClientData(
+                hostId,
+                NetworkSession.instance.PlayerName
+            ));
+        }
+
+        initializedOnNetworkSpawn = true;
     }
 
     public override void OnNetworkDespawn()
     {
         if (!IsServer) return;
+
         base.OnNetworkDespawn();
-        NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
+        
+        //Unsub from events
         NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
     }
 
     private void HandleClientDisconnected(ulong obj)
     {
         if (!IsServer) return;
-        Clients.Remove(obj);
-    }
 
-    private void HandleClientConnected(ulong obj)
-    {
-        if (!IsServer) return;
-        Clients.Add(obj);
+        //Remove the data for the client who disconnected
+        for (int i = 0; i < clientData.Count; i++)
+        {
+            if (clientData[i].ClientID == obj)
+            {
+                clientData.Remove(clientData[i]);
+                break;
+            }
+        }
     }
 
     public void RequestToKickPlayer(ulong clientID)
@@ -65,11 +91,34 @@ public class LobbyManager : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void KickPlayerServerRpc(ulong clientID)
     {
-        Debug.Log("kicking player");
+        //Debug.Log("kicking player");
 
         if (NetworkManager.Singleton.ConnectedClients.ContainsKey(clientID))
         {
             NetworkManager.Singleton.DisconnectClient(clientID);
         }
     }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    void SendPlayerNameRpc(FixedString32Bytes playerName, RpcParams rpcParams = default)
+    {
+        //Received the sender's client ID
+        ulong senderId = rpcParams.Receive.SenderClientId;
+
+        Debug.Log("Client: " + senderId.ToString() + " sent their name to the server");
+
+        // Prevent duplicate client IDs from existing in client data
+        for (int i = 0; i < clientData.Count; i++)
+        {
+            if (clientData[i].ClientID == senderId)
+            {
+                return;
+            }
+        }
+
+        //Add the client's data
+        clientData.Add(new ClientData(senderId, playerName));
+    }
+
+    public bool IsInitialized() => initializedOnNetworkSpawn && initializedOnStart;
 }
