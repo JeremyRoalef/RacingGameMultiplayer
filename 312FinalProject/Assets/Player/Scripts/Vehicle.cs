@@ -1,5 +1,3 @@
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,13 +5,14 @@ using UnityEngine.InputSystem;
 
 public class Vehicle : NetworkBehaviour
 {
+    public static List<Vehicle> Instances = new List<Vehicle>();
+
+    [Header("Input References")]
     [SerializeField]
     InputActionReference restartAtCheckpoint;
 
-    [SerializeField]
-    Transform cameraFollowLookAtTarget;
-
-    public static List<Vehicle> Instances = new List<Vehicle>();
+    [Header("Object/Component References")]
+    [SerializeField] Transform cameraFollowLookAtTarget;
 
     [SerializeField] VehicleSO vehicleSettings;
     [SerializeField] Wheel[] wheels;
@@ -32,31 +31,57 @@ public class Vehicle : NetworkBehaviour
 
     private void OnEnable()
     {
+        //Check for vehicle settings
+        if (vehicleSettings == null)
+        {
+            Debug.LogError("Null vehicle settings");
+        }
+
+        //New vehicle added to the scene
         Instances.Add(this);
 
-        //Subscribe for wheel grounded check
+        startingPos = transform.position;
+        startingRotation = transform.rotation;
+
+
+        //Subscribe to events
         foreach (Wheel wheel in wheels)
         {
             wheel.OnWheelGrounded += HandleWheelGrounded;
             wheel.OnWheelUngrounded += HandleWheelUngrounded;
         }
 
-        if (vehicleSettings == null)
-        {
-            Debug.LogError("Null vehicle settings");
-        }
-
         RaceManager.Instance.OnClientFinishedRace += HandleThisClientFinishedRace;
         restartAtCheckpoint.action.performed += RestartAtCheckpoint;
-
-        startingPos = transform.position;
-        startingRotation = transform.rotation;
     }
+
+    private void OnDisable()
+    {
+        //Vehicle has been removed from the game
+        Instances.Remove(this);
+
+        //Unsubscribe from events
+        foreach (Wheel wheel in wheels)
+        {
+            wheel.OnWheelGrounded -= HandleWheelGrounded;
+            wheel.OnWheelUngrounded -= HandleWheelUngrounded;
+        }
+
+        if (RaceManager.Instance != null)
+        {
+            RaceManager.Instance.OnClientFinishedRace -= HandleThisClientFinishedRace;
+        }
+        restartAtCheckpoint.action.performed -= RestartAtCheckpoint;
+    }
+
+    public ulong GetOwnerClientID() => OwnerClientId;
+
+    public Transform GetCameraFollowLookAtTransform() => cameraFollowLookAtTarget;
 
     private void RestartAtCheckpoint(InputAction.CallbackContext context)
     {
         if (!IsOwner) return;
-        Debug.Log("Owner wants to restart at checkpoint");
+        //Debug.Log("Owner wants to restart at checkpoint");
 
         //Reset rigidbody velocity and rotation
         rb.linearVelocity = Vector3.zero;
@@ -81,53 +106,26 @@ public class Vehicle : NetworkBehaviour
 
     private void HandleThisClientFinishedRace(ulong clientID)
     {
+        //Check if this player finished the race
         if (OwnerClientId != clientID) return;
-        
+
         //The vehicle is no longer needed; Hide & disable collision
         vehicleCollider.enabled = false;
-        foreach(Transform rendererOrFX in parentRendererAndFX)
+        foreach (Transform rendererOrFX in parentRendererAndFX)
         {
             rendererOrFX.gameObject.SetActive(false);
         }
     }
 
-    private void OnDisable()
-    {
-        Instances.Remove(this);
-
-        //Unsubscribe from wheel grounded check
-        foreach (Wheel wheel in wheels)
-        {
-            wheel.OnWheelGrounded -= HandleWheelGrounded;
-            wheel.OnWheelUngrounded -= HandleWheelUngrounded;
-        }
-    }
-
-    public ulong GetOwnerClientID()
-    {
-        return OwnerClientId;
-    }
-
-    public Transform GetCameraFollowLookAtTransform()
-    {
-        return cameraFollowLookAtTarget;
-    }
-
-    private void HandleWheelUngrounded(Wheel wheel)
-    {
-        groundedWheels.Remove(wheel);
-    }
+    private void HandleWheelUngrounded(Wheel wheel) => groundedWheels.Remove(wheel);
 
     private void HandleWheelGrounded(Wheel wheel)
     {
+        //Don't add the wheel if it was already added to the ground
         if (groundedWheels.Contains(wheel)) return;
         groundedWheels.Add(wheel);
     }
 
     [Rpc(SendTo.Server)]
-    public void UpdateCheckpointServerRpc(int checkpointIndex)
-    {
-        //Tell the server that the client has hit a new checkpoint
-        RaceManager.Instance.HandleClientHitCheckpoint(OwnerClientId, checkpointIndex);
-    }
+    public void UpdateCheckpointServerRpc(int checkpointIndex) => RaceManager.Instance.HandleClientHitCheckpoint(OwnerClientId, checkpointIndex);
 }

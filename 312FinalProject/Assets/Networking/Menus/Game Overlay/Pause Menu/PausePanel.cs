@@ -10,8 +10,5 @@ public class PausePanel : MonoBehaviour
         panelObj.gameObject.SetActive(false);
     }
 
-    public void TogglePausePanel(bool enablePanel)
-    {
-        panelObj.gameObject.SetActive(enablePanel);
-    }
+    public void TogglePausePanel(bool enablePanel) => panelObj.gameObject.SetActive(enablePanel);
 }

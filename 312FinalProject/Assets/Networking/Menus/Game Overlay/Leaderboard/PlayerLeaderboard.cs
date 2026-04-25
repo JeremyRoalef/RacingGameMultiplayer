@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,8 +12,6 @@ public class PlayerLeaderboard : MonoBehaviour
 
     [SerializeField]
     TextMeshProUGUI playerName;
-
-    ulong representativeClientID;
 
     public void Initialize(PlayerRaceData clientData, int racePosition)
     {
@@ -36,7 +33,6 @@ public class PlayerLeaderboard : MonoBehaviour
 
         textPlayerPosition.text = racePosition.ToString();
         this.playerName.text = playerName;
-        representativeClientID = clientData.ClientID;
 
         //determine how to get the vehicle image later
     }

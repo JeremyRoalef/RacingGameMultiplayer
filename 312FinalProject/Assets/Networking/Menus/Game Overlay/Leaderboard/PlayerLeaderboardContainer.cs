@@ -1,10 +1,7 @@
-using NUnit.Framework;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerLeaderboardContainer : MonoBehaviour
@@ -20,8 +17,9 @@ public class PlayerLeaderboardContainer : MonoBehaviour
         if (RaceManager.Instance != null)
         {
             //Race manager is initialized
-            RaceManager.Instance.OnClientAdded -= HandleClientAdded;
-            RaceManager.Instance.OnClientHitCheckpoint -= HandleClientHitCheckpoint;
+            RaceManager.Instance.OnClientAdded -= CreateLeaderboard;
+            RaceManager.Instance.OnClientRemoved -= CreateLeaderboard;
+            RaceManager.Instance.OnClientHitCheckpoint -= CreateLeaderboard;
         }
     }
 
@@ -30,30 +28,11 @@ public class PlayerLeaderboardContainer : MonoBehaviour
         StartCoroutine(InitializeLeaderboardContainer());
     }
 
-    private void HandleClientHitCheckpoint()
-    {
-        //Update the leaderboard to display any changes necessary in the order. Note that the order is determined by the child's
-        //alignment in the leaderboard container
-
-        CreateLeaderboard();
-    }
-
-    private void HandleClientAdded()
-    {
-        //Add a new client to the leaderbaord container & store it in the list
-        CreateLeaderboard();
-    }
-
-    void HandleClientRemoved()
-    {
-        CreateLeaderboard();
-    }
-
     IEnumerator InitializeLeaderboardContainer()
     {
+        //Wait until the race manager loads
         while (RaceManager.Instance == null)
         {
-            //Wait until the race manager is initialized
             yield return null;
         }
 
@@ -64,24 +43,24 @@ public class PlayerLeaderboardContainer : MonoBehaviour
         }
 
         //Race manager is initialized
-        RaceManager.Instance.OnClientAdded += HandleClientAdded;
-        RaceManager.Instance.OnClientRemoved += HandleClientRemoved;
-        RaceManager.Instance.OnClientHitCheckpoint += HandleClientHitCheckpoint;
-        
+        RaceManager.Instance.OnClientAdded += CreateLeaderboard;
+        RaceManager.Instance.OnClientRemoved += CreateLeaderboard;
+        RaceManager.Instance.OnClientHitCheckpoint += CreateLeaderboard;
+
+        //Wait for networkmanager to be load
         while (NetworkManager.Singleton == null)
         {
-            //Wait for networkmanager to be initialized
             yield return null;
         }
 
-        //Wait for next frame to initialize the leaderboard
+        //Wait for next frame to initialize the leaderboard, just in case
         yield return null;
         CreateLeaderboard();
     }
 
     private void CreateLeaderboard()
     {
-        Debug.Log("Creating the leaderboard");
+        //Debug.Log("Creating the leaderboard");
         List<PlayerRaceData> playerScoreboard = new List<PlayerRaceData>();
 
         //clear out the existing leaderboard
@@ -103,7 +82,6 @@ public class PlayerLeaderboardContainer : MonoBehaviour
             ThenByDescending(x => x.CurrentCheckpointIndex).ToList();
 
         //Debugging
-        Debug.Log("Scoreboard sorted: ");
         foreach (PlayerRaceData data in playerScoreboard)
         {
             Debug.Log(data.ToString());
@@ -120,6 +98,6 @@ public class PlayerLeaderboardContainer : MonoBehaviour
             clientLeaderboardObj.Initialize(clientData, clientRacePosition);
         }
 
-        Debug.Log("Leaderboard created");
+        //Debug.Log("Leaderboard created");
     }
 }

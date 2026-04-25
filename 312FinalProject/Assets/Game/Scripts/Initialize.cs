@@ -9,8 +9,12 @@ public class Initialize : MonoBehaviour
 
     private void Start()
     {
-        initObjects = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<IInitializable>().ToArray();
+        //Get all objects in the scene that implement IInitializable
+        initObjects = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).
+            OfType<IInitializable>().
+            ToArray();
 
+        //Wait for all initializable objects to be initialized
         StartCoroutine(WaitForInitialization());
     }
 
@@ -20,6 +24,7 @@ public class Initialize : MonoBehaviour
 
         while (!isInitialized)
         {
+            //Wait for next init cheeck
             yield return new WaitForSeconds(0.5f);
 
             //Default: done initializing. Check if this is not true
@@ -27,6 +32,7 @@ public class Initialize : MonoBehaviour
 
             foreach(MonoBehaviour initObj in initObjects)
             {
+                //Check if the object is initialized
                 if (initObj is IInitializable init && !init.IsInitialized())
                 {
                     //Object is not initialized, must wait another cycle 
@@ -37,7 +43,7 @@ public class Initialize : MonoBehaviour
         }
 
         //Everything is initialized; open main scene
-        SceneManager.LoadScene("NetworkTest"); //Change scene name eventually
+        SceneManager.LoadScene("MainMenu"); //Change scene name eventually
     }
 }
 

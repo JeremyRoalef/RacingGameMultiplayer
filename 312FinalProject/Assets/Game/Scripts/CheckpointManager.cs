@@ -22,15 +22,19 @@ public class CheckpointManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Multiple checkpoint managers found in scene");
+            Debug.LogWarning("Multiple checkpoint managers found in scene");
             Destroy(gameObject);
         }
 
         if (checkpointGroups.Length == 0)
         {
-            Debug.LogError("Error: Checkpoint group uninitialized for active scene");
+            Debug.LogWarning("Error: Checkpoint group uninitialized for active scene");
         }
+    }
 
+    private void OnEnable()
+    {
+        //Listen to when a player hits a given checkpoint
         foreach (CheckpointGroup checkpointGroup in checkpointGroups)
         {
             foreach (Checkpoint checkpoint in checkpointGroup.checkpoints)
@@ -43,6 +47,18 @@ public class CheckpointManager : MonoBehaviour
 
         //Initialize player current checkpoint
         currentCheckpoint = checkpointGroups.First().checkpoints.First();
+    }
+
+    private void OnDisable()
+    {
+        //Cleanup listening events
+        foreach (CheckpointGroup checkpointGroup in checkpointGroups)
+        {
+            foreach (Checkpoint checkpoint in checkpointGroup.checkpoints)
+            {
+                checkpoint.OnPlayerTriggerEnter -= HandlePlayerEnteredCheckpoint;
+            }
+        }
     }
 
     public void SetCurrentCheckpointGroup(CheckpointGroup checkpointGroup)
@@ -77,6 +93,8 @@ public class CheckpointManager : MonoBehaviour
         int currentCheckpointGroupIndex = Array.IndexOf(checkpointGroups, currentCheckpointGroup);
         int nextCheckpointGroupIndex = currentCheckpointGroupIndex + 1;
 
+        //Check if the next checkpoint group index exists. If not, set the next checkpoint group index to 0;
+        //player is about to lap
         if (nextCheckpointGroupIndex >= checkpointGroups.Length)
         {
             nextCheckpointGroupIndex = 0;

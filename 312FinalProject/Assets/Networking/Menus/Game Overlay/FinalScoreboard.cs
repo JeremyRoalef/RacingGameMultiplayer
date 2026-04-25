@@ -12,7 +12,7 @@ public class FinalScoreboard : MonoBehaviour
 
     public void SetScoreboardInformation(List<PlayerRaceData> playerRaceData)
     {
-        Debug.Log("Adding player race data to the scoreboard");
+        //Debug.Log("Adding player race data to the scoreboard");
 
         //Sort the player race data by the time it took for the client to finish the race. This gives the rank of the users
         playerRaceData = playerRaceData.OrderByDescending(x => x.TimeSpentDuringRace).ToList();
@@ -24,7 +24,7 @@ public class FinalScoreboard : MonoBehaviour
             //Craete the client scoreboards in the scoreboard container
             ClientScoreboardContainer clientScoreboardObj = Instantiate(clientScoreboardPrefab, scoreboardContainer);
 
-            Debug.Log("Added new player data");
+            //Debug.Log("Added new player data");
 
             //Set the client's data
             clientScoreboardObj.Initialize(playerRaceData[i - 1], i);
